@@ -86,6 +86,7 @@ jobs:
           files: ${{ matrix.sdk_name }}/bin/packages/**/*.apk
           body: |
             # 📝 Release Notes
-            - Optimized action.yaml
+            - Add log deletion functionality.
+            - Limit the length of the log display.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
