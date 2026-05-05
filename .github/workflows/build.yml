@@ -86,7 +86,7 @@ jobs:
           files: ${{ matrix.sdk_name }}/bin/packages/**/*.apk
           body: |
             # 📝 Release Notes
-            - Add log deletion functionality.
-            - Limit the length of the log display.
+            - Fixed the issue of not having permission to delete logs.
+            - Add a Chinese translation for the delete button and prompts.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
