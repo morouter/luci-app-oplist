@@ -1,7 +1,5 @@
 # luci-app-oplist
 - LuCI support for OpenList
-## 文/A
-- Supported Simplified Chinese and English
 ## 🚀 Features
 - The musl binary file of OpenList is packaged, bypassing the older binary with OpenWrt.
 - Support setting TLS, log storage location, etc. for OpenList in LuCI.
