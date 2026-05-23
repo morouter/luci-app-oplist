@@ -16,7 +16,7 @@ patch_val() {
     if [ "$is_str" -eq 1 ]; then
         sed -i "s|\"$key\": *\"[^\"]*\"|\"$key\": \"$val\"|g" "$CONF_FILE"
     else
-        sed -i "s/\"$key\": *[a-zA-Z0-9\.-]*/\"$key\": $val/g" "$CONF_FILE"
+        sed -i "s|\"$key\": *[a-zA-Z0-9\.-]*|\"$key\": $val|g" "$CONF_FILE"
     fi
 }
 
@@ -41,7 +41,7 @@ start_service() {
         $PROG admin set password --data "$CONF_DIR"
     fi
 
-    local port addr tls_en https_p cert key h2 h3 expire conn log_en log_size
+    local port addr tls_en https_p cert key h3_en expire conn log_en log_size
 
     config_get port main port "5244"
     config_get addr main listen_addr "0.0.0.0"
@@ -49,7 +49,7 @@ start_service() {
     config_get https_p main https_port "443"
     config_get cert main tls_cert ""
     config_get key main tls_key ""
-    config_get_bool h2 main h2_h3 0
+    config_get_bool h3_en main h3_enabled 0
     config_get expire main site_login_expire "48"
     config_get conn main site_max_connections "0"
     config_get_bool log_en main log_enable 1
@@ -65,17 +65,22 @@ start_service() {
         patch_val "https_port" "$https_p" 0
         [ -n "$cert" ] && patch_val "cert_file" "$cert" 1
         [ -n "$key" ] && patch_val "key_file" "$key" 1
-        patch_val "enable_h2c" "true" 0
-        patch_val "enable_h3" "true" 0
+
+        if [ "$h3_en" -eq 1 ]; then
+            patch_val "enable_h3" "true" 0
+        else
+            patch_val "enable_h3" "false" 0
+        fi
     else
         patch_val "force_https" "false" 0
+        patch_val "enable_h3" "false" 0
     fi
 
     local temp_d
     config_get temp_d main temp_dir "/etc/openlist/temp"
     patch_val "temp_dir" "$temp_d" 1
 
-    [ "$log_en" -eq 1 ] && patch_val "enable" "true" 0 || patch_val "enable" "false"
+    [ "$log_en" -eq 1 ] && patch_val "enable" "true" 0 || patch_val "enable" "false" 0
     patch_val "max_size" "$log_size" 0
     patch_val "name" "$CONF_DIR/log/log.log" 1
 

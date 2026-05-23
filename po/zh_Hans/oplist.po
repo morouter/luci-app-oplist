@@ -10,8 +10,8 @@ msgstr "运行中"
 msgid "NOT RUNNING"
 msgstr "未运行"
 
-msgid "A file list program powered by Gin and Solidjs."
-msgstr "基于 Gin 和 Solidjs 开发的文件列表程序"
+msgid "LuCI support for OpenList"
+msgstr "OpenList的LuCI支持"
 
 msgid "Default username: admin ; Default password: password"
 msgstr "默认用户名: admin ; 默认密码: password"
@@ -40,8 +40,8 @@ msgstr "私钥文件路径"
 msgid "Path to your .key / .pem file"
 msgstr ".key 或 .pem 文件路径"
 
-msgid "Enable HTTP2/HTTP3"
-msgstr "启用 HTTP/2 和 HTTP/3"
+msgid "Enable HTTP3"
+msgstr "启用 HTTP/3"
 
 msgid "Enable Logging"
 msgstr "启用日志记录"

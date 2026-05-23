@@ -1,4 +1,4 @@
-name : Fuck pkg source & luci-app-openlist
+name : I wanna say goodbye ye yeyeyeye
 
 on:
   push:
@@ -18,10 +18,10 @@ jobs:
         include:
           - openlist_arch: "amd64"
             patch_arch: "x86_64"
-            sdk_name: "immortalwrt-sdk-25.12.0-rc2-x86-64_gcc-14.3.0_musl.Linux-x86_64"
+            sdk_name: "openwrt-sdk-25.12.4-x86-64_gcc-14.3.0_musl.Linux-x86_64"
           - openlist_arch: "arm64"
             patch_arch: "aarch64_generic"
-            sdk_name: "immortalwrt-sdk-25.12.0-rc2-rockchip-armv8_gcc-14.3.0_musl.Linux-x86_64"
+            sdk_name: "openwrt-sdk-25.12.4-rockchip-armv8_gcc-14.3.0_musl.Linux-x86_64"
 
     steps:
       - name: Checkout Code
@@ -86,6 +86,10 @@ jobs:
           files: ${{ matrix.sdk_name }}/bin/packages/**/*.apk
           body: |
             # 📝 Release Notes
-            - Translation updated.
+            - The issue of being unable to close HTTP3 has been fixed.
+            - Stop supporting HTTP/2C
+            - Introduction and translation updated.
+            - The SDK has been changed to OpenWrt 25.12.4.
+            - Several minor issues have been fixed.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -57,7 +57,7 @@ return view.extend({
         var webport = uci.get(data[0], 'main', 'port') || '5244';
 
         m = new form.Map('oplist', _('OpenList'),
-            _('A file list program powered by Gin and Solidjs.') + '<br>' +
+            _('LuCI support for OpenList') + '<br>' +
             _('Default username: admin ; Default password: password')
         );
 
@@ -99,13 +99,13 @@ return view.extend({
 
         o = s.option(form.Value, 'tls_key', _('Private Key Path'), _('Path to your .key / .pem file'));
         o.depends('tls_enabled', '1');
-        o.placeholder = '/root/.acme.sh/your_domain/your_domian.key';
+        o.placeholder = '/root/.acme.sh/your_domain/your_domain.key';
 
-        o = s.option(form.Flag, 'h2_h3', _('Enable HTTP2/HTTP3'));
+        o = s.option(form.Flag, 'h3_enable', _('Enable HTTP3'));
         o.depends('tls_enabled', '1');
 
         o = s.option(form.Flag, 'log_enable', _('Enable Logging'));
-        o.default = o.enabled;
+        o.default = '1';
 
         o = s.option(form.Value, 'log_max_size', _('Max log size (MB)'));
         o.datatype = 'uinteger';
