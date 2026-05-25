@@ -86,10 +86,6 @@ jobs:
           files: ${{ matrix.sdk_name }}/bin/packages/**/*.apk
           body: |
             # 📝 Release Notes
-            - The issue of being unable to close HTTP3 has been fixed.
-            - Stop supporting HTTP/2C
-            - Introduction and translation updated.
-            - The SDK has been changed to OpenWrt 25.12.4.
-            - Several minor issues have been fixed.
+            - Updated OpenList Version to 4.2.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
