@@ -1,16 +1,20 @@
 # luci-app-oplist
 - LuCI support for OpenList
+## ⬇️ Downloads
+[GitHub Release](https://github.com/mokanove/luci-app-oplist/releases)
 ## 🚀 Features
 - The musl binary file of OpenList is packaged, bypassing the older binary with OpenWrt.
 - Support setting TLS, log storage location, etc. for OpenList in LuCI.
 ## ⚠️ Compatibility
-- It only supports ImmortalWrt 25.12.0-rc2 or later.
+- It only supports package manager **using apk**(OpenWrt 25.12+).
 - It is not guaranteed that it can be used on non-x86_64(amd64) and non-aarch64(arm64) architectures.
 ## 🛠 How to build?
-[Generic Docs](https://867678.xyz/doc/build)
-> Additional notes:
+[Generic Document](https://867678.xyz/doc/build)
+> It is assumed that you are already in the SDK root directory.
+>
+> Additional operations are required on the source code:
 ```
-cd ⚠️sdk-root/package/luci-app-oplist/root/usr/bin/
+cd package/luci-app-oplist/root/usr/bin/
 rm DONOTREMOVE
 curl -LO "https://github.com/OpenListTeam/OpenList/releases/download/v⚠️Here are OpenList Version/openlist-linux-musl-⚠️Here are your router cpu arch.tar.gz"
 tar -xzvf *.tar.gz
