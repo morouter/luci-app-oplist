@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       project_name: "luci-app-oplist"
-      openlist_version: "4.2.2"
     strategy:
       fail-fast: false
       matrix:
@@ -153,6 +152,6 @@ jobs:
           files: ${{ matrix.sdk_name }}/bin/packages/**/*.apk
           body: |
             # 📝 Release Notes
-            - Upgrade nodejs version to 26.3.0
+            - Upgrade pnpm version to 11.5.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
