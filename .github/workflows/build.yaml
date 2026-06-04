@@ -137,7 +137,6 @@ jobs:
           files: ${{ matrix.sdk_name }}/bin/packages/**/*.apk
           body: |
             # 📝 Release Notes
-            - Upgrade SDK to SNAPSHOT
-            - Remove Go cache
+            - Upgrade Golang to 1.26.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
