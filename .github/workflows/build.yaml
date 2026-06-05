@@ -137,6 +137,6 @@ jobs:
           files: ${{ matrix.sdk_name }}/bin/packages/**/*.apk
           body: |
             # 📝 Release Notes
-            - Upgrade Golang to 1.26.4
+            - Upgrade pnpm to 11.5.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
