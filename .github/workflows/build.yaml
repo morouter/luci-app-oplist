@@ -127,15 +127,15 @@ jobs:
       - name: Rename compilation files
         shell: bash
         run: |
-          mv ${{ matrix.sdk_name }}/bin/packages/*/base/luci-app-oplist* luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
+          mv ${{ matrix.sdk_name }}/bin/packages/**/luci-app* ./luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
 
       - name: Release
         uses: softprops/action-gh-release@master
         with:
           tag_name: V${{ steps.get_version.outputs.version }}
-          files: ${{ matrix.sdk_name }}/bin/packages/**/*.apk
+          files: ./*.apk
           body: |
             # 📝 Release Notes
-            - The actions now unavaliable to upload openlist binary
+            - Fixed some action problems
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
