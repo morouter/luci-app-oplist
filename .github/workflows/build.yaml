@@ -127,13 +127,16 @@ jobs:
       - name: Rename compilation files
         shell: bash
         run: |
-          mv ${{ matrix.sdk_name }}/bin/packages/**/luci-app* ./luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
+          mv ${{ matrix.sdk_name }}/bin/packages/*/base/luci-app* luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
+          mv ${{ matrix.sdk_name }}/package/${{ env.project_name }}/root/usr/bin/openlist openlist-${{ matrix.openlist_arch }}
 
       - name: Release
         uses: softprops/action-gh-release@master
         with:
           tag_name: V${{ steps.get_version.outputs.version }}
-          files: ./*.apk
+          files: |
+            ${{ matrix.sdk_name }}/bin/packages/**/*.apk
+            ${{ matrix.sdk_name }}/package/${{ env.project_name }}/root/usr/bin/openlist-${{ matrix.openlist_arch }}
           body: |
             # 📝 Release Notes
             - Fixed some action problems
