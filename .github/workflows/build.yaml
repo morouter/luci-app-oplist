@@ -127,6 +127,7 @@ jobs:
       - name: Rename compilation files
         shell: bash
         run: |
+          mv ${{ matrix.sdk_name }}/bin/packages/*/base/luci-app-oplist* luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
           mv ${{ matrix.sdk_name }}/package/${{ env.project_name }}/root/usr/bin/openlist $GITHUB_WORKSPACE/openlist-${{ matrix.openlist_arch }}
 
       - name: Release
@@ -135,7 +136,7 @@ jobs:
           tag_name: V${{ steps.get_version.outputs.version }}
           files: |
             ${{ matrix.sdk_name }}/bin/packages/**/*.apk
-            $GITHUB_WORKSPACE/openlist-${{ matrix.openlist_arch }}
+            ${{ github.workspace }}/openlist-${{ matrix.openlist_arch }}
           body: |
             # 📝 Release Notes
             - Fixed some action problems
