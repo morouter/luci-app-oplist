@@ -15,7 +15,7 @@ LuCI support for OpenList
 ```
 cd package/luci-app-oplist/root/usr/bin/
 rm DONOTREMOVE
-curl -LO "https://github.com/OpenListTeam/OpenList/releases/download/v⚠️Here are OpenList Version/openlist-linux-musl-⚠️Here are your router cpu arch.tar.gz"
+curl -LO "https://github.com/OpenListTeam/OpenList/releases/download/v⚠️OpenList Version/openlist-linux-musl-⚠️Your CPU Arch.tar.gz"
 tar -xzvf *.tar.gz
 rm -f *.tar.gz DONOTREMOVE
 cd ../../etc/openlist
