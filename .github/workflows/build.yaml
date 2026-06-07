@@ -114,7 +114,7 @@ jobs:
         run: |
           cd ${{ matrix.sdk_name }}/package/${{ env.project_name }}/root/usr/bin/
           rm -f DONOTREMOVE
-          cp "$GITHUB_WORKSPACE/openlist" ./
+          mv "$GITHUB_WORKSPACE/openlist" ./
           cd ../../etc/openlist
           rm DONOTREMOVE
 
@@ -127,10 +127,8 @@ jobs:
       - name: Rename compilation files
         shell: bash
         run: |
-          cd ${{ matrix.sdk_name }}/bin/packages/*/base/
-          mv luci-app-oplist* luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
-          cd $GITHUB_WORKSPACE
-          mv openlist openlist-${{ matrix.openlist_arch }}
+          mv ${{ matrix.sdk_name }}/bin/packages/*/base/luci-app-oplist* luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
+          mv ${{ matrix.sdk_name }}/package/${{ env.project_name }}/root/usr/bin/openlist $GITHUB_WORKSPACE/openlist-${{ matrix.openlist_arch }}
 
       - name: Release
         uses: softprops/action-gh-release@master
