@@ -137,8 +137,8 @@ jobs:
         with:
           tag_name: V${{ steps.get_version.outputs.version }}
           files: |
-          ${{ matrix.sdk_name }}/bin/packages/**/*.apk
-          $GITHUB_WORKSPACE/openlist-${{ matrix.openlist_arch }}
+            ${{ matrix.sdk_name }}/bin/packages/**/*.apk
+            $GITHUB_WORKSPACE/openlist-${{ matrix.openlist_arch }}
           body: |
             # 📝 Release Notes
             - The actions now avaliable to upload openlist binary
