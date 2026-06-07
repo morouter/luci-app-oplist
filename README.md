@@ -15,8 +15,7 @@ LuCI support for OpenList
 ```
 cd ⚠️sdk-root/package/luci-app-oplist/root/usr/bin/
 rm DONOTREMOVE
-curl -LO "https://github.com/OpenListTeam/OpenList/releases/download/v⚠️OpenList Version/openlist-linux-musl-⚠️Your CPU Arch.tar.gz"
-tar -xzvf *.tar.gz
+wget -O openlist https://github.com/mokanove/luci-app-oplist/releases/latest/download/openlist-amd64-⚠️ARCH
 rm -f *.tar.gz DONOTREMOVE
 cd ../../etc/openlist
 rm DONOTREMOVE
