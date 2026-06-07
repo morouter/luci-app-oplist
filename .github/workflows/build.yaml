@@ -26,21 +26,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@main
 
-      - name: Install Build Environment
-        uses: mokanove/mokanove/actions/luci-env@main
+      - name: Preparing build environment
+        uses: mokanove/mokanove/actions/build-env@main
 
-      - name: Prepare OpenWrt SDK
+      - name: Prepare SDK
         uses: mokanove/mokanove/actions/prepare-sdk@main
         with:
           sdk_name: ${{ matrix.sdk_name }}
 
-      - name: Clone APP Code
+      - name: Clone Source Code
         uses: mokanove/mokanove/actions/clone@main
         with:
           sdk_name: ${{ matrix.sdk_name }}
           project_name: ${{ env.project_name }}
 
-      - name: Get APP Version
+      - name: Get Version
         id: get_version
         shell: bash
         run: |
@@ -48,7 +48,7 @@ jobs:
           VERSION=$(grep -E "^PKG_VERSION[[:space:]]*:=" Makefile | sed -E 's/.*:=[[:space:]]*//' | tr -d '[:space:]')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Change APP Arch
+      - name: Change Arch
         shell: bash
         run: |
           cd ${{ matrix.sdk_name }}/package/${{ env.project_name }}
@@ -79,7 +79,7 @@ jobs:
           pnpm install
           pnpm build
 
-      - name: Build OpenList Binary
+      - name: Build OpenList Back-End
         shell: bash
         run: |
           git clone --depth 1 https://github.com/OpenListTeam/OpenList.git backend-src
@@ -114,7 +114,7 @@ jobs:
         run: |
           cd ${{ matrix.sdk_name }}/package/${{ env.project_name }}/root/usr/bin/
           rm -f DONOTREMOVE
-          mv "$GITHUB_WORKSPACE/openlist" ./
+          cp "$GITHUB_WORKSPACE/openlist" ./
           cd ../../etc/openlist
           rm DONOTREMOVE
 
@@ -129,14 +129,18 @@ jobs:
         run: |
           cd ${{ matrix.sdk_name }}/bin/packages/*/base/
           mv luci-app-oplist* luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
+          cd $GITHUB_WORKSPACE
+          mv openlist openlist-${{ matrix.openlist_arch }}
 
       - name: Release
         uses: softprops/action-gh-release@master
         with:
           tag_name: V${{ steps.get_version.outputs.version }}
-          files: ${{ matrix.sdk_name }}/bin/packages/**/*.apk
+          files: |
+          ${{ matrix.sdk_name }}/bin/packages/**/*.apk
+          $GITHUB_WORKSPACE/openlist-${{ matrix.openlist_arch }}
           body: |
             # 📝 Release Notes
-            - Upgrade pnpm to 11.5.2
+            - The actions now avaliable to upload openlist binary
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
