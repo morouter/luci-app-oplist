@@ -127,7 +127,7 @@ jobs:
       - name: Rename compilation files
         shell: bash
         run: |
-          mv package/${{ env.project_name }}/root/usr/bin/openlist $GITHUB_WORKSPACE/openlist-${{ matrix.openlist_arch }}
+          mv ${{ matrix.sdk_name }}/package/${{ env.project_name }}/root/usr/bin/openlist $GITHUB_WORKSPACE/openlist-${{ matrix.openlist_arch }}
 
       - name: Release
         uses: softprops/action-gh-release@master
