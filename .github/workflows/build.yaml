@@ -93,7 +93,7 @@ jobs:
         id: get_version
         shell: bash
         run: |
-          mv ${{ env.project_name }} ${{ env.sdk_name }}/package/
+          mv ${{ env.project_name }} ${{ matrix.sdk_name }}/package/
           cd ${{ matrix.sdk_name }}/package/${{ env.project_name }}/
           if [ "${{ matrix.patch_arch }}" != "x86_64" ]; then
             sed -i 's/x86_64/${{ matrix.patch_arch }}/g' ./Makefile
