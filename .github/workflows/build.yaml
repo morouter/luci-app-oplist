@@ -17,9 +17,11 @@ jobs:
         include:
           - tags: "CGO_ENABLED=0"
             patch_arch: "x86_64"
+            openlist_nickname: "amd64-musl"
             sdk_name: "openwrt-sdk-x86-64_gcc-14.3.0_musl.Linux-x86_64"
           - tags: "GOARCH=arm64"
             patch_arch: "aarch64_generic"
+            openlist_nickname: "arm64-musl"
             sdk_name: "openwrt-sdk-rockchip-armv8_gcc-14.3.0_musl.Linux-x86_64"
 
     steps:
@@ -116,7 +118,7 @@ jobs:
         shell: bash
         run: |
           mv ${{ matrix.sdk_name }}/bin/packages/*/base/luci-app*.apk $GITHUB_WORKSPACE/luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
-          mv openlist openlist-${{ matrix.openlist_arch }}
+          mv openlist openlist-${{ matrix.openlist_nickname }}
 
       - name: Release
         uses: softprops/action-gh-release@master
@@ -125,7 +127,7 @@ jobs:
           files: |
             ${{ matrix.sdk_name }}/bin/packages/*/base/*.apk
             ${{ github.workspace }}/*.apk
-            ${{ github.workspace }}/openlist-${{ matrix.openlist_arch }}
+            ${{ github.workspace }}/openlist-${{ matrix.openlist_nickname }}
           body: |
             # 📝 Release Notes
             - Some actions change
