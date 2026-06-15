@@ -22,6 +22,18 @@ rm -f DONOTREMOVE
 cd ../../etc/openlist
 rm DONOTREMOVE
 ```
+# 📚 Help
+- Forgot password?
+> Using this command to reset a random password
+>
+> Because OpenList password is encrypted, so only can be reset, not can be read.
+```
+openlist admin random --data /etc/openlist
+```
+> Or any you want
+```
+openlist --data /etc/openlist set admin [password]
+```
 ## ⚖️ License
 > This application is licensed under the [GNU Affero General Public License Version 3 (AGPL-3.0)](https://www.gnu.org/licenses/agpl-3.0.html).
 > 
