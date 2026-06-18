@@ -84,7 +84,7 @@ jobs:
 
           webVersion=$(curl -s --max-time 5 "https://api.github.com/repos/OpenListTeam/OpenList-Frontend/releases/latest" -L | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | sed 's/^v//')
           if [ -z "$webVersion" ]; then
-              webVersion="${{ steps.get_version.outputs.version }}"
+              exit 1
           fi
 
           ldflags="-w -s \
