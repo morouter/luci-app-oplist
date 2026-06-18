@@ -15,13 +15,29 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - tags: "CGO_ENABLED=0"
+          - tag: "GOOS=windows GOARCH=amd64"
+            openlist_nickname: "windows-amd64"
+          - tag: "GOOS=darwin GOARCH=arm64"
+            openlist_nickname: "darwin-arm64"
+          - tag: "GOAMD64=v4"
+            openlist_nickname: "linux-glibc-amd64v4"
+          - tag: "GOAMD64=v3"
+            openlist_nickname: "linux-glibc-amd64v3"
+          - tag: "GOAMD64=v2"
+            openlist_nickname: "linux-glibc-amd64v2"
+          - tag: "GOAMD64=v1"
+            openlist_nickname: "linux-glibc-amd64v1"
+          - tag: ""
+            openlist_nickname: "linux-glibc-amd64"
+          - tag: "CGO_ENABLED=0"
+            openlist_nickname: "linux-amd64-musl"
+            openwrt: "yes"
             patch_arch: "x86_64"
-            openlist_nickname: "amd64-musl"
             sdk_name: "openwrt-sdk-x86-64_gcc-14.3.0_musl.Linux-x86_64"
-          - tags: "GOARCH=arm64"
+          - tag: "GOARCH=arm64"
+            openlist_nickname: "linux-musl-arm64"
+            openwrt: "yes"
             patch_arch: "aarch64_generic"
-            openlist_nickname: "arm64-musl"
             sdk_name: "openwrt-sdk-rockchip-armv8_gcc-14.3.0_musl.Linux-x86_64"
 
     steps:
@@ -78,20 +94,23 @@ jobs:
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.GitCommit=$gitCommit' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.Version=$version' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.WebVersion=$webVersion'"
-          ${{ matrix.tags }} go build -ldflags "$ldflags" -o openlist .
+          ${{ matrix.tag }} go build -ldflags "$ldflags" -o openlist .
 
           chmod +x openlist
           mv ./openlist $GITHUB_WORKSPACE/openlist
 
       - name: Preparing build environment
+        if: matrix.openwrt == 'yes'
         uses: mokanove/mokanove/actions/build-env@main
 
       - name: Prepare SDK
+        if: matrix.openwrt == 'yes'
         uses: mokanove/mokanove/actions/prepare-sdk@main
         with:
           sdk_name: ${{ matrix.sdk_name }}
 
       - name: Preparation before compilation
+        if: matrix.openwrt == 'yes'
         id: get_version
         shell: bash
         run: |
@@ -108,7 +127,8 @@ jobs:
           cd ../../etc/openlist
           rm DONOTREMOVE
 
-      - name: Build!
+      - name: Build for OpenWrt
+        if: matrix.openwrt == 'yes'
         shell: bash
         run: |
           cd ${{ matrix.sdk_name }}
