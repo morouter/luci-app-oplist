@@ -7,7 +7,7 @@ permissions:
   contents: write
 jobs:
   build:
-    name: Build for ${{ matrix.patch_arch }}
+    name: Build for ${{ matrix.openlist_nickname }}
     runs-on: ubuntu-latest
     env:
       project_name: "luci-app-oplist"
