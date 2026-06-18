@@ -134,10 +134,15 @@ jobs:
           cd ${{ matrix.sdk_name }}
           make package/${{ env.project_name }}/compile V=s -j$(nproc)
 
-      - name: Rename compilation files
+      - name: Rename OpenWrt APK
+        if: matrix.openwrt == 'yes'
         shell: bash
         run: |
           mv ${{ matrix.sdk_name }}/bin/packages/*/base/luci-app*.apk $GITHUB_WORKSPACE/luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
+
+      - name: Rename openlist binary
+        shell: bash
+        run: |
           mv openlist openlist-${{ matrix.openlist_nickname }}
 
       - name: Release
