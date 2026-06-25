@@ -1,4 +1,9 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: AGPL-3.0
+
+//The log shows a partial quote: 
+// <https://github.com/Internet1235/luci-app-openlist/blob/main/luci-app-openlist/htdocs/luci-static/resources/view/openlist/log.js> 
+// With Apache-2.0 License
+
 'use strict';
 'require dom';
 'require fs';

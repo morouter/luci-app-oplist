@@ -9,7 +9,7 @@ LuCI support for OpenList
 ## ⚠️ Compatibility
 - It is not guaranteed that it can be used on non-x86_64(amd64) and non-aarch64(arm64) architectures.
 ## 🛠 How to build?
-[Generic Document](https://867678.xyz/doc/openwrt)
+[Generic Document](https://867678.xyz/doc/Openwrt)
 
 > It is assumed that you are already in the SDK root directory.
 >
@@ -18,6 +18,7 @@ LuCI support for OpenList
 cd ⚠️sdk-root/package/luci-app-oplist/root/usr/bin/
 rm DONOTREMOVE
 wget -O openlist https://github.com/mokanove/luci-app-oplist/releases/latest/download/openlist-⚠️ARCH-⚠️LibC
+# Aslo can try https://l.867678.xyz/openlist-⚠️ARCH-⚠️LibC
 rm -f DONOTREMOVE
 cd ../../etc/openlist
 rm DONOTREMOVE
