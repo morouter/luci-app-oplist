@@ -1,0 +1,6 @@
+config oplist 'main'
+	option enabled '0'
+	option port '5244'
+	option tls_enabled '0'
+	option log_enable '1'
+	option temp_dir '/etc/openlist/temp'
