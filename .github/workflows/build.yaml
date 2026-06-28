@@ -74,6 +74,9 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/OpenListTeam/OpenList.git backend-src
           cd backend-src
+          go mod tidy
+          go get -u ./...
+          go fmt ./...
           bash build.sh dev web
 
           builtAt="$(date +'%F %T %z')"
