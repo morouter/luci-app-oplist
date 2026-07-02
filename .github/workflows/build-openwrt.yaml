@@ -48,7 +48,6 @@ jobs:
           sdk_arch: ${{ matrix.sdk_arch }}
 
       - name: Preparation before compilation
-        if: matrix.openwrt == 'yes'
         shell: bash
         run: |
           mv ${{ env.project_name }} ${{ steps.sdk.outputs.sdk_dir }}/package/
@@ -63,7 +62,6 @@ jobs:
           rm DONOTREMOVE
 
       - name: Build for OpenWrt
-        if: matrix.openwrt == 'yes'
         shell: bash
         run: |
           cd ${{ steps.sdk.outputs.sdk_dir }}
