@@ -98,6 +98,8 @@ jobs:
         with:
           tag_name: OpenList
           files: ${{ github.workspace }}/openlist-${{ matrix.openlist_nickname }}
-          body:
+          body: |
+            # OpenList binary
+            - With high performance made by MoKanove & GitHub Actions
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
