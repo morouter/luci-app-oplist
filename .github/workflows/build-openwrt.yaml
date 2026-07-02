@@ -19,7 +19,7 @@ jobs:
       matrix:
         include:
           - patch_arch: "x86_64"
-            sdk_name: "x86-64"
+            sdk_arch: "x86-64"
             openlist_nickname: "linux-musl-amd64"
           - patch_arch: "aarch64_generic"
             sdk_arch: "rockchip-armv8"
