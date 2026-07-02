@@ -1,6 +1,8 @@
 name: I only smoke when i drink
 
 on:
+  schedule:
+    - cron: '* * */3 * *'
   push:
   workflow_dispatch:
 permissions:
@@ -9,8 +11,6 @@ jobs:
   build:
     name: Build for ${{ matrix.openlist_nickname }}
     runs-on: ubuntu-latest
-    env:
-      project_name: "luci-app-oplist"
     strategy:
       fail-fast: false
       matrix:
@@ -27,14 +27,8 @@ jobs:
             openlist_nickname: "linux-glibc-amd64"
           - tag: "CGO_ENABLED=0"
             openlist_nickname: "linux-musl-amd64"
-            openwrt: "yes"
-            patch_arch: "x86_64"
-            sdk_name: "openwrt-sdk-x86-64_gcc-14.4.0_musl.Linux-x86_64"
           - tag: "GOARCH=arm64"
             openlist_nickname: "linux-musl-arm64"
-            openwrt: "yes"
-            patch_arch: "aarch64_generic"
-            sdk_name: "openwrt-sdk-rockchip-armv8_gcc-14.4.0_musl.Linux-x86_64"
           - tag: "GOOS=darwin GOARCH=arm64"
             openlist_nickname: "darwin-arm64"
           - tag: "GOOS=windows GOARCH=amd64"
@@ -44,7 +38,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@main
         with:
-          path: ${{ env.project_name }}
+          path: useless/
 
       - name: Set up Node.js
         uses: actions/setup-node@main
@@ -74,7 +68,7 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/OpenListTeam/OpenList.git backend-src
           cd backend-src
-          go fmt ./...
+
           bash build.sh dev web
           builtAt="$(date +'%F %T %z')"
           goVersion=$(go version | sed 's/go version //')
@@ -90,73 +84,20 @@ jobs:
           ldflags="-w -s \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.BuiltAt=$builtAt' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.GoVersion=$goVersion' \
-            -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.GitAuthor=$gitAuthor' \
+            -X 'github.com/OpenListTeam/OpenList/vV${{ steps.get_version.outputs.version }}4/internal/conf.GitAuthor=$gitAuthor' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.GitCommit=$gitCommit' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.Version=$version' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.WebVersion=$webVersion'"
           ${{ matrix.tag }} go build -ldflags "$ldflags" -o openlist .
 
           chmod +x openlist
-          mv ./openlist $GITHUB_WORKSPACE/openlist
-
-      - name: Preparing build environment
-        if: matrix.openwrt == 'yes'
-        uses: mokanove/mokanove/actions/build-env@main
-
-      - name: Prepare SDK
-        if: matrix.openwrt == 'yes'
-        uses: mokanove/mokanove/actions/prepare-sdk@main
-        with:
-          sdk_name: ${{ matrix.sdk_name }}
-
-      - name: Get Version
-        id: get_version
-        shell: bash
-        run: |
-          cd ${{ env.project_name }}
-          VERSION=$(grep -E "^PKG_VERSION[[:space:]]*:=" Makefile | sed -E 's/.*:=[[:space:]]*//' | tr -d '[:space:]')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Preparation before compilation
-        if: matrix.openwrt == 'yes'
-        shell: bash
-        run: |
-          mv ${{ env.project_name }} ${{ matrix.sdk_name }}/package/
-          cd ${{ matrix.sdk_name }}/package/${{ env.project_name }}/
-          if [ "${{ matrix.patch_arch }}" != "x86_64" ]; then
-            sed -i 's/x86_64/${{ matrix.patch_arch }}/g' ./Makefile
-          fi
-          cd root/usr/bin/
-          rm -f DONOTREMOVE
-          cp $GITHUB_WORKSPACE/openlist ./
-          cd ../../etc/openlist
-          rm DONOTREMOVE
-
-      - name: Build for OpenWrt
-        if: matrix.openwrt == 'yes'
-        shell: bash
-        run: |
-          cd ${{ matrix.sdk_name }}
-          make package/${{ env.project_name }}/compile V=s -j$(nproc)
-
-      - name: Rename compilation files
-        shell: bash
-        run: |
-          mv openlist openlist-${{ matrix.openlist_nickname }}
-          mv ${{ matrix.sdk_name }}/bin/packages/*/base/luci-app*.apk $GITHUB_WORKSPACE/luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk || exit 0
+          mv ./openlist $GITHUB_WORKSPACE/openlist-${{ matrix.openlist_nickname }}
 
       - name: Release
         uses: softprops/action-gh-release@master
         with:
-          tag_name: V${{ steps.get_version.outputs.version }}
-          files: |
-            ${{ matrix.sdk_name }}/bin/packages/*/base/*.apk
-            ${{ github.workspace }}/*.apk
-            ${{ github.workspace }}/openlist-${{ matrix.openlist_nickname }}
-          body: |
-            # 📝 Release Note
-            - Fixes and improvements
-            # ⚠️ WARNING
-            - Breaking update; may be unstable.
+          tag_name: OpenList
+          files: ${{ github.workspace }}/openlist-${{ matrix.openlist_nickname }}
+          body:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
