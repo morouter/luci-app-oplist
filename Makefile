@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-oplist
-PKG_VERSION:=0.6.6
+PKG_VERSION:=0.6.7
 PKG_RELEASE:=1
 PKG_LICENSE:=AGPL-3.0
 

@@ -13,7 +13,7 @@ LuCI support for OpenList
 
 > It is assumed that you are already in the SDK root directory.
 >
-> Additional operations are required on the source code:
+> Additional operations are required on the source code before compile:
 ```
 cd ⚠️sdk-root/package/luci-app-oplist/root/usr/bin/
 rm DONOTREMOVE

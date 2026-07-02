@@ -1,23 +1,23 @@
 {
-	"luci-app-oplist": {
-		"description": "ACL file for luci-app-oplist",
-		"read": {
-		    "file": {
-				"/etc/openlist/log/log.log": [ "read" ]
-			},
-			"cgi-io": [ "download" ],
-			"uci": [ "oplist" ],
-			"ubus": {
-				"service": [ "list" ],
-				"uci": [ "get" ]
-			}
-		},
-		"write": {
-			"uci": [ "oplist" ],
-			"ubus": {
-				"service": [ "list" ],
-				"uci": [ "set", "commit" ]
-			}
-		}
-	}
+  "luci-app-oplist": {
+    "description": "ACL file for luci-app-oplist",
+    "read": {
+      "file": {
+        "/etc/openlist/log/log.log": ["read"]
+      },
+      "cgi-io": ["download"],
+      "uci": ["oplist"],
+      "ubus": {
+        "service": ["list"],
+        "uci": ["get"]
+      }
+    },
+    "write": {
+      "uci": ["oplist"],
+      "ubus": {
+        "service": ["list"],
+        "uci": ["set", "commit"]
+      }
+    }
+  }
 }

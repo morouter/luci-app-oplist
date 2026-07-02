@@ -1,4 +1,4 @@
-name : I only smoke when i drink
+name: I only smoke when i drink
 
 on:
   push:
@@ -55,11 +55,11 @@ jobs:
         uses: pnpm/action-setup@master
         with:
           version: latest
-          
+
       - name: Set up Go
         uses: actions/setup-go@main
         with:
-          go-version: 'stable'
+          go-version: "stable"
 
       - name: Build OpenList Front-End
         shell: bash
@@ -74,7 +74,7 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/OpenListTeam/OpenList.git backend-src
           cd backend-src
-
+          go fmt ./...
           bash build.sh dev web
           builtAt="$(date +'%F %T %z')"
           goVersion=$(go version | sed 's/go version //')
@@ -156,5 +156,7 @@ jobs:
           body: |
             # 📝 Release Note
             - Fixes and improvements
+            # ⚠️ WARNING
+            - Breaking update; may be unstable.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

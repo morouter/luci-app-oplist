@@ -1,10 +1,7 @@
 "use strict";
-"require dom";
 "require form";
-"require fs";
 "require poll";
 "require rpc";
-"require uci";
 "require validation";
 "require view";
 
@@ -35,17 +32,6 @@ function renderStatus(isRunning, port) {
   }
   return renderHTML;
 }
-
-var stubValidator = {
-  factory: validation,
-  apply: function (type, value, args) {
-    if (value != null) this.value = value;
-    return validation.types[type].apply(this, args);
-  },
-  assert: function (condition) {
-    return !!condition;
-  },
-};
 
 return view.extend({
   load: function () {

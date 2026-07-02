@@ -5,10 +5,7 @@
 // With Apache-2.0 License
 
 "use strict";
-"require dom";
-"require fs";
 "require poll";
-"require uci";
 "require view";
 
 return view.extend({

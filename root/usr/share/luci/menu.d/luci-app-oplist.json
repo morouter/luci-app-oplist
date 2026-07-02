@@ -1,26 +1,26 @@
 {
-	"admin/services/oplist": {
-		"title": "OpenList",
-		"action": {
-			"type": "alias",
-			"path": "admin/services/oplist/config"
-		},
-		"order": 99
-	},
-	"admin/services/oplist/config": {
-		"title": "Config",
-		"order": 1,
-		"action": {
-			"type": "view",
-			"path": "oplist/index"
-		}
-	},
-	"admin/services/oplist/log": {
-		"title": "Logs",
-		"order": 2,
-		"action": {
-			"type": "view",
-			"path": "oplist/log"
-		}
-	}
+  "admin/services/oplist": {
+    "title": "OpenList",
+    "action": {
+      "type": "alias",
+      "path": "admin/services/oplist/config"
+    },
+    "order": 99
+  },
+  "admin/services/oplist/config": {
+    "title": "Config",
+    "order": 1,
+    "action": {
+      "type": "view",
+      "path": "oplist/index"
+    }
+  },
+  "admin/services/oplist/log": {
+    "title": "Logs",
+    "order": 2,
+    "action": {
+      "type": "view",
+      "path": "oplist/log"
+    }
+  }
 }
