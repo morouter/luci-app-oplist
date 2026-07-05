@@ -58,6 +58,7 @@ jobs:
           cd root/usr/bin/
           rm -f DONOTREMOVE
           wget -O openlist https://github.com/mokanove/luci-app-oplist/releases/download/OpenList/openlist-${{ matrix.openlist_nickname }}
+          chmod +x ./openlist
           cd ../../etc/openlist
           rm DONOTREMOVE
 
