@@ -1,10 +1,10 @@
 "use strict";
 "require uci";
+"require rpc";
 "require form";
 "require poll";
-"require rpc";
-"require validation";
 "require view";
+"require validation";
 
 const callServiceList = rpc.declare({
   object: "service",

@@ -6,6 +6,7 @@
 
 "use strict";
 "require fs";
+"require dom";
 "require poll";
 "require view";
 
