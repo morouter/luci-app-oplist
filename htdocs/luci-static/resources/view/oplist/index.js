@@ -1,4 +1,5 @@
 "use strict";
+"require uci";
 "require form";
 "require poll";
 "require rpc";

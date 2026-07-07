@@ -5,6 +5,7 @@
 // With Apache-2.0 License
 
 "use strict";
+"require fs";
 "require poll";
 "require view";
 

@@ -1,8 +1,8 @@
 # luci-app-oplist
 LuCI support for OpenList
 ## ⬇️ Downloads
-[GitHub Release](https://github.com/mokanove/luci-app-oplist/releases)
-[Mirror by MoKanove](https://867678.xyz/doc/Mirror)
+[GitHub Release](https://github.com/morouter/luci-app-oplist/releases)
+[OpenList High performance aslo have Mirror by MoKanove](https://867678.xyz/doc/Mirror)
 ## 🚀 Features
 - The musl binary file of OpenList is packaged, bypassing the older binary with OpenWrt.
 - Support setting TLS, log storage location, etc. for OpenList in LuCI.
@@ -17,7 +17,7 @@ LuCI support for OpenList
 ```
 cd ⚠️sdk-root/package/luci-app-oplist/root/usr/bin/
 rm DONOTREMOVE
-wget -O openlist https://github.com/mokanove/luci-app-oplist/releases/latest/download/openlist-⚠️ARCH-⚠️LibC
+wget -O openlist https://github.com/morouter/luci-app-oplist/releases/latest/download/openlist-⚠️ARCH-⚠️LibC
 # Aslo can try https://l.867678.xyz/openlist-⚠️ARCH-⚠️LibC
 rm -f DONOTREMOVE
 cd ../../etc/openlist

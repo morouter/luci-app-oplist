@@ -3,8 +3,7 @@ name: When I only think about you
 on:
   workflow_run:
     workflows: ["I only smoke when i drink"]
-    types:
-      - completed
+    types: - completed
   workflow_dispatch:
 permissions:
   contents: write
@@ -57,7 +56,7 @@ jobs:
           fi
           cd root/usr/bin/
           rm -f DONOTREMOVE
-          wget -O openlist https://github.com/mokanove/luci-app-oplist/releases/download/OpenList/openlist-${{ matrix.openlist_nickname }}
+          wget -O openlist https://github.com/morouter/luci-app-oplist/releases/download/OpenList/openlist-${{ matrix.openlist_nickname }}
           chmod +x ./openlist
           cd ../../etc/openlist
           rm DONOTREMOVE
