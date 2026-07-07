@@ -3,7 +3,8 @@ name: When I only think about you
 on:
   workflow_run:
     workflows: ["I only smoke when i drink"]
-    types: - completed
+    types:
+      - completed
   workflow_dispatch:
 permissions:
   contents: write
