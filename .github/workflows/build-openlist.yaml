@@ -100,6 +100,6 @@ jobs:
           files: ${{ github.workspace }}/openlist-${{ matrix.openlist_nickname }}
           body: |
             # OpenList binary
-            - With high performance made by MoKanove & GitHub Actions
+            - With high performance made by MoAEIOU & GitHub Actions
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -39,11 +39,11 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Preparing build environment
-        uses: mokanove/mokanove/actions/build-env@main
+        uses: moaeiou/moaeiou/actions/build-env@main
 
       - name: Prepare SDK
         id: sdk
-        uses: mokanove/mokanove/actions/prepare-sdk@main
+        uses: moaeiou/moaeiou/actions/prepare-sdk@main
         with:
           sdk_arch: ${{ matrix.sdk_arch }}
 
