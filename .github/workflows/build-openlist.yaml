@@ -75,7 +75,7 @@ jobs:
           static-link-for-musl: true
           musl-base-url: https://github.com/OpenListTeam/musl-compilers/releases/latest/download
           musl-target-format: $os-$arch-$musl
-          out-dir: $GITHUB_WORKSPACE
+          out-dir: ${{ github.workspace }}
           output: openlist-${{ matrix.openlist_nickname }}
 
       - name: Release
