@@ -63,6 +63,18 @@ jobs:
         with:
           go-version: "stable"
 
+      - name: Prepare before build
+        shell: bash
+        run: |
+          git clone --depth 1 https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
+          cd frontend-src
+          pnpm install
+          pnpm build
+          cd ../
+          git clone --depth 1 https://github.com/OpenListTeam/OpenList.git backend-src
+          cd backend-src
+          bash build.sh dev web
+
       - name: Build!
         id: cgo-action
         uses: OpenListTeam/cgo-actions@v1
