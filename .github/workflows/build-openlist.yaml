@@ -35,10 +35,10 @@ jobs:
           - tags: "GOARCH=arm64"
             target: "linux-arm64-musl"
             openlist_nickname: "linux-musl-arm64"
-          - tags: "GOOS=darwin GOARCH=arm64"
+          - tags: ""
             target: "darwin-arm64"
             openlist_nickname: "darwin-arm64"
-          - tags: "GOOS=windows GOARCH=amd64"
+          - tags: ""
             target: "windows-amd64"
             openlist_nickname: "windows-amd64.exe"
 
@@ -67,14 +67,8 @@ jobs:
         id: cgo-action
         uses: OpenListTeam/cgo-actions@v1
         with:
-          dir: '.'
           tags: ${{ matrix.tags }}
           targets: ${{ matrix.targets }}
-          packages: '.'
-          flags: -ldflags=-w -s
-          static-link-for-musl: true
-          musl-base-url: https://github.com/OpenListTeam/musl-compilers/releases/latest/download
-          musl-target-format: $os-$arch-$musl
           out-dir: ${{ github.workspace }}
           output: openlist-${{ matrix.openlist_nickname }}
 
