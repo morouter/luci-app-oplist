@@ -68,7 +68,7 @@ jobs:
         uses: OpenListTeam/cgo-actions@v1
         with:
           tags: ${{ matrix.tags }}
-          targets: ${{ matrix.targets }}
+          targets: ${{ matrix.target }}
           out-dir: ${{ github.workspace }}
           output: openlist-${{ matrix.openlist_nickname }}
 
