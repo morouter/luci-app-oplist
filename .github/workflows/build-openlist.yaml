@@ -65,7 +65,7 @@ jobs:
 
       - name: Build!
         id: cgo-action
-        uses: go-cross/cgo-actions@v1
+        uses: OpenListTeam/cgo-actions@v1
         with:
           dir: $GITHUB_WORKSPACE/openlist-${{ matrix.openlist_nickname }}
           targets: ${{ matrix.targets }}
