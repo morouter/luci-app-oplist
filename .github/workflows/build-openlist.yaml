@@ -15,31 +15,23 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - tags: "GOAMD64=v4"
-            target: "linux-amd64"
+          - tag: "GOAMD64=v4"
             openlist_nickname: "linux-glibc-amd64v4"
-          - tags: "GOAMD64=v3"
-            target: "linux-amd64"
+          - tag: "GOAMD64=v3"
             openlist_nickname: "linux-glibc-amd64v3"
-          - tags: "GOAMD64=v2"
-            target: "linux-amd64"
+          - tag: "GOAMD64=v2"
             openlist_nickname: "linux-glibc-amd64v2"
-          - tags: "GOAMD64=v1"
+          - tag: "GOAMD64=v1"
             openlist_nickname: "linux-glibc-amd64v1"
-          - tags: ""
-            target: "linux-amd64"
+          - tag: ""
             openlist_nickname: "linux-glibc-amd64"
-          - tags: "CGO_ENABLED=0"
-            target: "linux-amd64-musl"
+          - tag: "CGO_ENABLED=0"
             openlist_nickname: "linux-musl-amd64"
-          - tags: "GOARCH=arm64"
-            target: "linux-arm64-musl"
+          - tag: "GOARCH=arm64"
             openlist_nickname: "linux-musl-arm64"
-          - tags: ""
-            target: "darwin-arm64"
+          - tag: "GOOS=darwin GOARCH=arm64"
             openlist_nickname: "darwin-arm64"
-          - tags: ""
-            target: "windows-amd64"
+          - tag: "GOOS=windows GOARCH=amd64"
             openlist_nickname: "windows-amd64.exe"
 
     steps:
@@ -63,27 +55,43 @@ jobs:
         with:
           go-version: "stable"
 
-      - name: Prepare before build
+      - name: Build OpenList Front-End
         shell: bash
         run: |
           git clone --depth 1 https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
           cd frontend-src
           pnpm install
           pnpm build
-          cd ../
+
+      - name: Build OpenList Back-End
+        shell: bash
+        run: |
           git clone --depth 1 https://github.com/OpenListTeam/OpenList.git backend-src
           cd backend-src
-          bash build.sh dev web
 
-      - name: Build!
-        id: cgo-action
-        uses: OpenListTeam/cgo-actions@v1
-        with:
-          dir: 'backend-src'
-          tags: ${{ matrix.tags }}
-          targets: ${{ matrix.target }}
-          out-dir: ${{ github.workspace }}
-          output: openlist-${{ matrix.openlist_nickname }}
+          bash build.sh dev web
+          builtAt="$(date +'%F %T %z')"
+          goVersion=$(go version | sed 's/go version //')
+          gitAuthor=$(git show -s --format='format:%aN <%ae>' HEAD)
+          gitCommit=$(git log --pretty=format:"%h" -1)
+          version=$(git describe --long --tags --dirty --always)
+
+          webVersion=$(curl -s --max-time 5 "https://api.github.com/repos/OpenListTeam/OpenList-Frontend/releases/latest" -L | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | sed 's/^v//')
+          if [ -z "$webVersion" ]; then
+              exit 1
+          fi
+
+          ldflags="-w -s \
+            -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.BuiltAt=$builtAt' \
+            -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.GoVersion=$goVersion' \
+            -X 'github.com/OpenListTeam/OpenList/vV${{ steps.get_version.outputs.version }}4/internal/conf.GitAuthor=$gitAuthor' \
+            -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.GitCommit=$gitCommit' \
+            -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.Version=$version' \
+            -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.WebVersion=$webVersion'"
+          ${{ matrix.tag }} go build -ldflags "$ldflags" -o openlist .
+
+          chmod +x openlist
+          mv ./openlist $GITHUB_WORKSPACE/openlist-${{ matrix.openlist_nickname }}
 
       - name: Release
         uses: softprops/action-gh-release@master
