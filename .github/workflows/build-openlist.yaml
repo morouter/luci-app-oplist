@@ -79,6 +79,7 @@ jobs:
         id: cgo-action
         uses: OpenListTeam/cgo-actions@v1
         with:
+          dir: 'backend-src'
           tags: ${{ matrix.tags }}
           targets: ${{ matrix.target }}
           out-dir: ${{ github.workspace }}
