@@ -84,7 +84,7 @@ jobs:
           ldflags="-w -s \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.BuiltAt=$builtAt' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.GoVersion=$goVersion' \
-            -X 'github.com/OpenListTeam/OpenList/vV${{ steps.get_version.outputs.version }}4/internal/conf.GitAuthor=$gitAuthor' \
+            -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.GitAuthor=$gitAuthor' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.GitCommit=$gitCommit' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.Version=$version' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.WebVersion=$webVersion'"
