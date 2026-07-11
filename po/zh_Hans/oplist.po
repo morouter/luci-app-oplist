@@ -21,8 +21,8 @@ msgstr "未运行"
 msgid "LuCI support for OpenList"
 msgstr "OpenList的LuCI支持"
 
-msgid "Default username: admin ; Default password: password"
-msgstr "默认用户名: admin ; 默认密码: password"
+msgid "Default username/password: admin/password"
+msgstr "默认用户名/密码：admin/password"
 
 msgid "Enable Service"
 msgstr "启用服务"
@@ -75,8 +75,14 @@ msgstr "日志文件不存在"
 msgid "Unknown error: %s"
 msgstr "未知错误："
 
-msgid "To clear the log, please use:"
-msgstr "希望清除日志，请使用："
+msgid "This will permanently erase the current log file. Continue?"
+msgstr "此操作将永久清除当前日志文件，你要继续吗？"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Failed to clear log: %s"
+msgstr "清空日志失败：%s"
 
 msgid "Refresh every 5 seconds."
 msgstr "每5秒刷新一次"

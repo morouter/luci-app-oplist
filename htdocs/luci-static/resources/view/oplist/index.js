@@ -48,7 +48,7 @@ return view.extend({
       _("OpenList"),
       _("LuCI support for OpenList") +
         "<br>" +
-        _("Default username: admin ; Default password: password"),
+        _("Default username/password: admin/password"),
     );
 
     s = m.section(form.TypedSection);

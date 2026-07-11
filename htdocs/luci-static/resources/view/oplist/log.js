@@ -9,24 +9,25 @@
 "require dom";
 "require poll";
 "require view";
+"require ui";
 
 return view.extend({
   render: function () {
     var css =
       "                     \
-        #log_textarea {                 \
-        padding: 10px;              \
-        text-align: left;           \
-    }                               \
-    #log_textarea pre {             \
-    padding: .5rem;             \
-    word-break: break-all;      \
-    margin: 0;                  \
-    white-space: pre-wrap;      \
-    max-height: 70vh;           \
-    overflow-y: auto;           \
-    background: #f4f4f4;        \
-    border: 1px solid #ccc;     \
+    #log_textarea {         \
+    padding: 10px;          \
+    text-align: left;       \
+    }                       \
+    #log_textarea pre {     \
+    padding: .5rem;         \
+    word-break: break-all;  \
+    margin: 0;              \
+    white-space: pre-wrap;  \
+    max-height: 70vh;       \
+    overflow-y: auto;       \
+    background: #f4f4f4;  \
+    border: 1px solid #ccc;\
     }";
 
     var log_textarea = E(
@@ -42,6 +43,58 @@ return view.extend({
         _("Collecting data..."),
       ),
     );
+
+    function handleClearLog(ev) {
+      var btn = ev.target;
+      return ui.showModal(_("Clear log"), [
+        E(
+          "p",
+          {},
+          _("This will permanently erase the current log file. Continue?"),
+        ),
+        E("div", { class: "right" }, [
+          E(
+            "button",
+            {
+              class: "btn",
+              click: ui.hideModal,
+            },
+            _("Cancel"),
+          ),
+          " ",
+          E(
+            "button",
+            {
+              class: "btn cbi-button-negative",
+              click: function () {
+                btn.disabled = true;
+                return fs
+                  .write("/etc/openlist/log/log.log", "")
+                  .then(function () {
+                    ui.hideModal();
+                    dom.content(
+                      log_textarea,
+                      E("pre", { wrap: "pre" }, [_("Log is empty.")]),
+                    );
+                  })
+                  .catch(function (err) {
+                    ui.hideModal();
+                    ui.addNotification(
+                      null,
+                      E("p", {}, _("Failed to clear log: %s").format(err)),
+                      "error",
+                    );
+                  })
+                  .finally(function () {
+                    btn.disabled = false;
+                  });
+              },
+            },
+            _("Clear log"),
+          ),
+        ]),
+      ]);
+    }
 
     poll.add(
       L.bind(function () {
@@ -79,17 +132,14 @@ return view.extend({
                 "display: flex; justify-content: space-between; align-items: center; margin-top: 10px; color: #666;",
             },
             [
-              E("span", {}, [
-                _("To clear the log, please use: "),
-                E(
-                  "code",
-                  {
-                    style:
-                      "background:#eee; padding:2px 4px; border-radius:3px;",
-                  },
-                  "rm /etc/openlist/log/log.log",
-                ),
-              ]),
+              E(
+                "button",
+                {
+                  class: "btn cbi-button-negative",
+                  click: ui.createHandlerFn(this, handleClearLog),
+                },
+                _("Clear log"),
+              ),
               E("small", {}, _("Refresh every 5 seconds.")),
             ],
           ),

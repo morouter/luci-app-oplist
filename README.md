@@ -18,7 +18,7 @@ LuCI support for OpenList
 cd ⚠️sdk-root/package/luci-app-oplist/root/usr/bin/
 rm DONOTREMOVE
 wget -O openlist https://github.com/morouter/luci-app-oplist/releases/latest/download/openlist-⚠️ARCH-⚠️LibC
-# Aslo can try https://l.867678.xyz/openlist-⚠️ARCH-⚠️LibC
+# Also can try https://l.867678.xyz/openlist-⚠️ARCH-⚠️LibC
 rm -f DONOTREMOVE
 cd ../../etc/openlist
 rm DONOTREMOVE

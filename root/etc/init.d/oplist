@@ -7,16 +7,38 @@ BINARY="/usr/bin/openlist"
 CONF_DIR="/etc/openlist"
 CONF_FILE="$CONF_DIR/config.json"
 
+_sed_escape() {
+    printf '%s' "$1" | sed -e 's/[\\|&]/\\&/g'
+}
+
 patch_val() {
     local key="$1"
     local val="$2"
     local is_str="$3"
     [ -z "$val" ] && return
 
+    local esc_key
+    esc_key="$(_sed_escape "$key")"
+
     if [ "$is_str" -eq 1 ]; then
-        sed -i "s|\"$key\": *\"[^\"]*\"|\"$key\": \"$val\"|g" "$CONF_FILE"
+        # Strip any embedded double quotes/backslashes from the raw value
+        # before it becomes a JSON string literal.
+        local safe_val esc_val
+        safe_val="$(printf '%s' "$val" | tr -d '"' | tr -d '\\')"
+        esc_val="$(_sed_escape "$safe_val")"
+        sed -i "s|\"$esc_key\": *\"[^\"]*\"|\"$esc_key\": \"$esc_val\"|" "$CONF_FILE"
     else
-        sed -i "s|\"$key\": *[^,}]*|\"$key\": $val|g" "$CONF_FILE"
+        # Numeric/boolean literal: only allow [0-9a-zA-Z.+-], anything else
+        # is rejected to guarantee valid, injection-free JSON.
+        case "$val" in
+            *[!0-9a-zA-Z.+-]*)
+                logger -t oplist "refusing to patch '$key': invalid literal value '$val'"
+                return
+                ;;
+        esac
+        local esc_val
+        esc_val="$(_sed_escape "$val")"
+        sed -i "s|\"$esc_key\": *[^,}]*|\"$esc_key\": $esc_val|" "$CONF_FILE"
     fi
 }
 
@@ -36,9 +58,21 @@ start_service() {
             sleep 1
             wait=$((wait + 1))
         done
-        kill $pid
-        sleep 1
-        $BINARY admin set password --data "$CONF_DIR"
+        kill "$pid" 2>/dev/null
+        local kill_wait=0
+        while kill -0 "$pid" 2>/dev/null && [ $kill_wait -lt 10 ]; do
+            sleep 1
+            kill_wait=$((kill_wait + 1))
+        done
+        # Escalate if it ignored SIGTERM, then wait for reaping either way.
+        kill -0 "$pid" 2>/dev/null && kill -9 "$pid" 2>/dev/null
+        wait "$pid" 2>/dev/null
+
+        if [ ! -f "$CONF_FILE" ]; then
+            logger -t oplist "bootstrap failed: $CONF_FILE was not created, skipping admin password setup"
+        else
+            $BINARY admin set password --data "$CONF_DIR"
+        fi
     fi
 
     local port addr tls_en https_p cert key h3_en expire conn log_en log_size

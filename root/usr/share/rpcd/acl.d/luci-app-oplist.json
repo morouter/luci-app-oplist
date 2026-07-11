@@ -1,6 +1,6 @@
 {
   "luci-app-oplist": {
-    "description": "ACL file for luci-app-oplist",
+    "description": "ACL for luci-app-oplist",
     "read": {
       "file": {
         "/etc/openlist/log/log.log": ["read"]
@@ -13,9 +13,11 @@
       }
     },
     "write": {
+      "file": {
+        "/etc/openlist/log/log.log": ["write"]
+      },
       "uci": ["oplist"],
       "ubus": {
-        "service": ["list"],
         "uci": ["set", "commit"]
       }
     }
