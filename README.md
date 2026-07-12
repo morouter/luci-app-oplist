@@ -4,11 +4,31 @@ LuCI support for OpenList
 [GitHub Release](https://github.com/morouter/luci-app-oplist/releases)
 [Mirror by MoKanove](https://867678.xyz/doc/Mirror)
 ## 🚀 Features
-- The musl binary file of OpenList is packaged, bypassing the older binary with OpenWrt.
-- Support setting TLS, log storage location, etc. for OpenList in LuCI.
-## ⚠️ Compatibility
-- It is not guaranteed that it can be used on non-x86_64(amd64) and non-aarch64(arm64) architectures.
-## 🛠 How to build?
+- A simple LuCI interface for OpenList
+- With high performance rebuild OpenList binary
+## ⚠️ Warn
+- It only support x86_64 and aarch64_generic paltform.
+# 📚 Help
+- Forgot password?
+> Using this command to reset a random password
+>
+> Because OpenList password is encrypted, so only can reset.
+>
+> You need change the [username] and [password] to real username and password
+```
+openlist [username] random --data /etc/openlist
+```
+> Or any password you want
+```
+openlist --data /etc/openlist set [username] [password]
+```
+- Cannot be start?
+Check your port and make sure not already in use
+
+View log page to get detail info
+
+Or give this project an issue.
+## 🛠 How to self-build?
 [Generic Document](https://867678.xyz/doc/OpenWrt)
 
 > It is assumed that you are already in the SDK root directory.
@@ -22,18 +42,6 @@ wget -O openlist https://github.com/morouter/luci-app-oplist/releases/latest/dow
 rm -f DONOTREMOVE
 cd ../../etc/openlist
 rm DONOTREMOVE
-```
-# 📚 Help
-- Forgot password?
-> Using this command to reset a random password
->
-> Because OpenList password is encrypted, so only can be reset, not can be read.
-```
-openlist admin random --data /etc/openlist
-```
-> Or any you want
-```
-openlist --data /etc/openlist set admin [password]
 ```
 ## ⚖️ License
 > This application is licensed under the [GNU Affero General Public License Version 3 (AGPL-3.0)](https://www.gnu.org/licenses/agpl-3.0.html).

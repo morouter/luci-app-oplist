@@ -1,4 +1,4 @@
-# luci-app-oplist - Simplified Chinese Translation
+# luci-app-oplist - Traditional Chinese Translation
 SPDX-License-Identifier: AGPL-3.0
 #
 msgid ""
@@ -7,85 +7,85 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Config"
-msgstr "配置"
+msgstr "設定"
 
 msgid "Logs"
-msgstr "日志"
+msgstr "日誌"
 
 msgid "RUNNING"
-msgstr "运行中"
+msgstr "運行中"
 
 msgid "NOT RUNNING"
-msgstr "未运行"
+msgstr "未運行"
 
 msgid "LuCI support for OpenList"
-msgstr "OpenList的LuCI支持"
+msgstr "OpenList的LuCI支援"
 
 msgid "Default username/password: admin/password"
-msgstr "默认用户名/密码：admin/password"
+msgstr "默認用戶名/密碼：admin/password"
 
 msgid "Enable Service"
-msgstr "启用服务"
+msgstr "啟用服務"
 
 msgid "HTTP Listen Port"
-msgstr "HTTP监听端口"
+msgstr "HTTP偵聽端口"
 
 msgid "Enable TLS"
-msgstr "启用 TLS"
+msgstr "啟用TLS"
 
 msgid "HTTPS Listen Port"
-msgstr "HTTPS监听端口"
+msgstr "HTTPS偵聽端口"
 
 msgid "Certificate Path"
-msgstr "证书文件路径"
+msgstr "證書（公鑰）文件路徑"
 
 msgid "Path to your .crt / .cer file"
-msgstr ".crt 或 .cer 文件路径"
+msgstr ".crt 或 .cer 文件路徑"
 
 msgid "Private Key Path"
-msgstr "私钥文件路径"
+msgstr "私鑰文件路徑"
 
 msgid "Path to your .key / .pem file"
-msgstr ".key 或 .pem 文件路径"
+msgstr ".key 或 .pem 文件路經"
 
 msgid "Enable HTTP3"
-msgstr "启用 HTTP/3"
+msgstr "啟用HTTP/3"
 
 msgid "Enable Logging"
-msgstr "启用日志记录"
+msgstr "啟用日誌記錄"
 
 msgid "Max log size (MB)"
-msgstr "最大日志大小（单位：MB）"
+msgstr "最大日誌大小（單位：MB）"
 
 msgid "Cache Directory"
-msgstr "缓存目录"
+msgstr "緩存目錄"
 
 msgid "Directory for temporary files during upload."
-msgstr "上传文件临时缓存目录"
+msgstr "臨時緩存上傳的文件的目錄。"
 
 msgid "Collecting data..."
-msgstr "收集数据中..."
+msgstr "收集數據中..."
 
 msgid "Log is empty."
-msgstr "日志是空的"
+msgstr "日誌是空的"
 
 msgid "Log file does not exist."
-msgstr "日志文件不存在"
+msgstr "日誌文件不存在"
 
 msgid "Unknown error: %s"
-msgstr "未知错误："
+msgstr "未知錯誤："
 
 msgid "This will permanently erase the current log file. Continue?"
-msgstr "此操作将永久删除当前日志文件，你要继续吗？"
+msgstr "這個操作將永久刪除日誌文件，您確定嗎？"
 
 msgid "Cancel"
 msgstr "取消"
 
 msgid "Clear log"
-msgstr "删除日志"
+msgstr "刪除日誌"
 
 msgid "Failed to clear log: %s"
-msgstr "删除日志失败：%s"
+msgstr "刪除日誌失敗：%s"
 
 msgid "Refresh every 5 seconds."
-msgstr "每5秒刷新一次"
+msgstr "每5秒刷新一次。"

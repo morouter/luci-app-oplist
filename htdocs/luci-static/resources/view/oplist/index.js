@@ -116,7 +116,7 @@ return view.extend({
       form.Value,
       "temp_dir",
       _("Cache Directory"),
-      _("Directory for temporary files during upload/download."),
+      _("Directory for temporary files during upload."),
     );
     o.placeholder = "/etc/openlist/temp";
     o.rmempty = false;

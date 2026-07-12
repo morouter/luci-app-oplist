@@ -1,8 +1,6 @@
-// SPDX-License-Identifier: AGPL-3.0
-
 // The log shows a partial quote:
 // <https://github.com/Internet1235/luci-app-openlist/blob/main/luci-app-openlist/htdocs/luci-static/resources/view/openlist/log.js>
-// With Apache-2.0 License
+// With Apache-2.0 License , here changed to AGPL-v3.0
 
 "use strict";
 "require fs";
@@ -129,7 +127,7 @@ return view.extend({
             "div",
             {
               style:
-                "display: flex; justify-content: space-between; align-items: center; margin-top: 10px; color: #666;",
+                "display: flex; justify-content: space-between; align-items: center; margin-top: 10px;",
             },
             [
               E(
