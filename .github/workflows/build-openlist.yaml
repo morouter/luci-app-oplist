@@ -45,28 +45,32 @@ jobs:
         with:
           node-version: latest
 
+      - name: Clone OpenList Front-End
+        shell: bash
+        run: |
+          git clone --depth 1 https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
+
       - name: Set up pnpm
         uses: pnpm/action-setup@master
+        shell: bash
+        run: |
+          cd frontend-src
+          pnpm update --latest
+          pnpm install
+          pnpm build
+
+      - name: Clone OpenList Back-End
+        shell: bash
+        run: |
+          git clone --depth 1 https://github.com/OpenListTeam/OpenList.git backend-src
 
       - name: Set up Go
         uses: actions/setup-go@main
         with:
           go-version: "stable"
-
-      - name: Build OpenList Front-End
         shell: bash
         run: |
-          git clone --depth 1 https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
-          cd frontend-src
-          pnpm install
-          pnpm build
-
-      - name: Build OpenList Back-End
-        shell: bash
-        run: |
-          git clone --depth 1 https://github.com/OpenListTeam/OpenList.git backend-src
           cd backend-src
-
           bash build.sh dev web
           builtAt="$(date +'%F %T %z')"
           goVersion=$(go version | sed 's/go version //')
