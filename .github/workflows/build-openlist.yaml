@@ -49,8 +49,6 @@ jobs:
         shell: bash
         run: |
           git clone --depth 1 https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
-          cd frontend-src
-          npm audit fix --force
 
       - name: Set up pnpm
         uses: pnpm/action-setup@master
