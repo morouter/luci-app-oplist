@@ -47,8 +47,6 @@ jobs:
 
       - name: Set up pnpm
         uses: pnpm/action-setup@master
-        with:
-          version: latest
 
       - name: Set up Go
         uses: actions/setup-go@main
