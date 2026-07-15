@@ -8,6 +8,8 @@ LuCI support for OpenList
 - With high performance rebuild OpenList binary
 ## ⚠️ Warn
 - It only support x86_64 and aarch64_generic paltform.
+
+If you need to complie the other paltforms, change ./Makefile line `9` **x86_64** to your paltform.
 # 📚 Help
 - Forgot password?
 > Using this command to reset a random password

@@ -21,6 +21,9 @@ msgstr "未運行"
 msgid "LuCI support for OpenList"
 msgstr "OpenList的LuCI支援"
 
+msgid "If you need to modify options that are not available, please edit the /etc/openlist/config.json file."
+msgstr "如果你需要修改我們沒有的選項，請編輯/etc/openlist/config.json檔案。"
+
 msgid "Default username/password: admin/password"
 msgstr "默認用戶名/密碼：admin/password"
 

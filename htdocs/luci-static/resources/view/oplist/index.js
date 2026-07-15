@@ -48,7 +48,9 @@ return view.extend({
       _("OpenList"),
       _("LuCI support for OpenList") +
         "<br>" +
-        _("Default username/password: admin/password"),
+        _("Default username/password: admin/password")+
+          "<br>" +
+          _("If you need to modify options that are not available, please edit the /etc/openlist/config.json file."),
     );
 
     s = m.section(form.TypedSection);
