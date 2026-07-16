@@ -11,8 +11,30 @@ permissions:
 
 jobs:
   OpenList:
-    name: Build OpenList binary
+    name: Build for ${{ matrix.openlist_nickname }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - tag: "GOAMD64=v4"
+            openlist_nickname: "linux-glibc-amd64v4"
+          - tag: "GOAMD64=v3"
+            openlist_nickname: "linux-glibc-amd64v3"
+          - tag: "GOAMD64=v2"
+            openlist_nickname: "linux-glibc-amd64v2"
+          - tag: "GOAMD64=v1"
+            openlist_nickname: "linux-glibc-amd64v1"
+          - tag: ""
+            openlist_nickname: "linux-glibc-amd64"
+          - tag: "CGO_ENABLED=0"
+            openlist_nickname: "linux-musl-amd64"
+          - tag: "GOARCH=arm64"
+            openlist_nickname: "linux-musl-arm64"
+          - tag: "GOOS=darwin GOARCH=arm64"
+            openlist_nickname: "darwin-arm64"
+          - tag: "GOOS=windows GOARCH=amd64"
+            openlist_nickname: "windows-amd64.exe"
     steps:
       - name: Checkout
         uses: actions/checkout@main
