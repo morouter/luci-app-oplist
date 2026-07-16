@@ -90,6 +90,9 @@ msgstr "日志最长保留时间（天）"
 msgid "Compress Rotated Logs"
 msgstr "压缩轮换日志"
 
+msgid "Compress old log files after rotation to save storage space."
+msgstr "日志轮换后压缩旧日志文件，以节省存储空间。"
+
 msgid "Enable Log Filter"
 msgstr "启用日志过滤"
 

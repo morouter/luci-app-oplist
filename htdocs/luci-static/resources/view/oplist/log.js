@@ -165,7 +165,9 @@ return view.extend({
               E(
                 "small",
                 {},
-                _("Auto-refreshes every 5 seconds while viewing the latest logs."),
+                _(
+                  "Auto-refreshes every 5 seconds while viewing the latest logs.",
+                ),
               ),
             ],
           ),

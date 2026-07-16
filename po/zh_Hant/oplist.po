@@ -90,6 +90,9 @@ msgstr "日誌最長保留時間（天）"
 msgid "Compress Rotated Logs"
 msgstr "壓縮輪替日誌"
 
+msgid "Compress old log files after rotation to save storage space."
+msgstr "日誌輪替後壓縮舊日誌檔案，以節省儲存空間。"
+
 msgid "Enable Log Filter"
 msgstr "啟用日誌過濾"
 

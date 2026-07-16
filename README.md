@@ -5,42 +5,42 @@ LuCI support for OpenList
 [Mirror by MoKanove](https://867678.xyz/doc/Mirror)
 ## 🚀 Features
 - A simple LuCI interface for OpenList
-- With high performance rebuild OpenList binary
-## ⚠️ Warn
-- It only support x86_64 and aarch64_generic paltform.
+- A high-performance rebuilt OpenList binary
+## ⚠️ Warning
+- It only supports the x86_64 and aarch64_generic platforms.
 
-If you need to complie the other paltforms, change ./Makefile line `9` **x86_64** to your paltform.
+If you need to compile for another platform, change **x86_64** on line `9` of `./Makefile` to your target platform.
 # 📚 Help
-- Forgot password?
-> Using this command to reset a random password
+- Forgot your password?
+> Use this command to reset it to a random password.
 >
-> Because OpenList password is encrypted, so only can reset.
+> OpenList passwords are encrypted and cannot be recovered, so they can only be reset.
 >
-> You need change the [username] and [password] to real username and password
+> Replace `[username]` and `[password]` with the actual username and password.
 ```
 openlist [username] random --data /etc/openlist
 ```
-> Or any password you want
+> Or set a password of your choice.
 ```
 openlist [username] set [password] --data /etc/openlist
 ```
-- Cannot be start?
-Check your port and make sure not already in use
+- Cannot start the service?
+Check the configured port and make sure it is not already in use.
 
-View log page to get detail info
+View the log page for more details.
 
-Or give this project an issue.
+Alternatively, open an issue for this project.
 ## 🛠 How to self-build?
 [Generic Document](https://867678.xyz/doc/OpenWrt)
 
 > It is assumed that you are already in the SDK root directory.
 >
-> Additional operations are required on the source code before compile:
+> Additional operations on the source code are required before compilation:
 ```
 cd ⚠️sdk-root/package/luci-app-oplist/root/usr/bin/
 rm DONOTREMOVE
 wget -O openlist https://github.com/morouter/luci-app-oplist/releases/latest/download/openlist-⚠️ARCH-⚠️LibC
-# Also can try https://l.867678.xyz/openlist-⚠️ARCH-⚠️LibC
+# Alternatively, try https://l.867678.xyz/openlist-⚠️ARCH-⚠️LibC
 rm -f DONOTREMOVE
 cd ../../etc/openlist
 rm DONOTREMOVE
@@ -50,4 +50,4 @@ rm DONOTREMOVE
 > 
 > We have included the [OpenList](https://github.com/OpenListTeam/OpenList) binary, which is developed by OpenListTeam and based on the AGPL-3.0 open source.
 >
-> The log shows a partial quote: <https://github.com/Internet1235/luci-app-openlist/blob/main/luci-app-openlist/htdocs/luci-static/resources/view/openlist/log.js> With Apache-2.0 License
+> The log viewer contains code adapted from <https://github.com/Internet1235/luci-app-openlist/blob/main/luci-app-openlist/htdocs/luci-static/resources/view/openlist/log.js>, licensed under Apache-2.0.

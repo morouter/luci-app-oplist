@@ -75,7 +75,9 @@ return view.extend({
       form.Value,
       "listen_addr",
       _("Listen Address"),
-      _("Address on which OpenList listens. Use 0.0.0.0 for all IPv4 interfaces or :: for all IPv6 interfaces."),
+      _(
+        "Address on which OpenList listens. Use 0.0.0.0 for all IPv4 interfaces or :: for all IPv6 interfaces.",
+      ),
     );
     o.datatype = "ipaddr";
     o.default = "0.0.0.0";
@@ -132,7 +134,11 @@ return view.extend({
     o.placeholder = "/etc/openlist/temp";
     o.rmempty = false;
 
-    o = s.option(form.Value, "site_login_expire", _("Login Expiration (hours)"));
+    o = s.option(
+      form.Value,
+      "site_login_expire",
+      _("Login Expiration (hours)"),
+    );
     o.datatype = "uinteger";
     o.default = "48";
     o.placeholder = "48";
@@ -187,7 +193,12 @@ return view.extend({
     o.default = "28";
     o.placeholder = "28";
 
-    o = s.option(form.Flag, "log_compress", _("Compress Rotated Logs"));
+    o = s.option(
+      form.Flag,
+      "log_compress",
+      _("Compress Rotated Logs"),
+      _("Compress old log files after rotation to save storage space."),
+    );
     o.depends("log_enable", "1");
     o.default = "0";
 
