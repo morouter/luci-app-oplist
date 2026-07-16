@@ -137,12 +137,22 @@ return view.extend({
     o.default = "48";
     o.placeholder = "48";
 
-    o = s.option(form.Value, "site_max_connections", _("Max Connections"));
+    o = s.option(
+      form.Value,
+      "site_max_connections",
+      _("Max Connections"),
+      _("Set to 0 for unlimited."),
+    );
     o.datatype = "uinteger";
     o.default = "0";
     o.placeholder = "0";
 
-    o = s.option(form.Value, "max_concurrency", _("Max Concurrency"));
+    o = s.option(
+      form.Value,
+      "max_concurrency",
+      _("Max Concurrency"),
+      _("Set to 0 for unlimited."),
+    );
     o.datatype = "uinteger";
     o.default = "64";
     o.placeholder = "64";
@@ -155,13 +165,23 @@ return view.extend({
     o.depends("log_enable", "1");
     o.placeholder = "5";
 
-    o = s.option(form.Value, "log_max_backups", _("Max Log Backups"));
+    o = s.option(
+      form.Value,
+      "log_max_backups",
+      _("Max Log Backups"),
+      _("Set to 0 for unlimited."),
+    );
     o.datatype = "uinteger";
     o.depends("log_enable", "1");
     o.default = "30";
     o.placeholder = "30";
 
-    o = s.option(form.Value, "log_max_age", _("Max Log Age (days)"));
+    o = s.option(
+      form.Value,
+      "log_max_age",
+      _("Max Log Age (days)"),
+      _("Set to 0 for unlimited."),
+    );
     o.datatype = "uinteger";
     o.depends("log_enable", "1");
     o.default = "28";

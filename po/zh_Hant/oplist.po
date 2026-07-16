@@ -45,6 +45,9 @@ msgstr "登入有效期（小時）"
 msgid "Max Connections"
 msgstr "最大連線數"
 
+msgid "Set to 0 for unlimited."
+msgstr "設定為 0 表示不限制。"
+
 msgid "Max Concurrency"
 msgstr "最大並行數"
 

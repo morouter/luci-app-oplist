@@ -10,7 +10,7 @@ function require_object(value, path) {
 }
 
 function parse_uint(value, path) {
-	if (value !~ /^(0|[1-9][0-9]*)$/)
+	if (!match(value, /^(0|[1-9][0-9]*)$/))
 		die(`Invalid unsigned integer for ${path}: ${value}\n`);
 
 	return +value;
