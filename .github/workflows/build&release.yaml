@@ -126,19 +126,6 @@ jobs:
 
           go build -ldflags "$ldflags" -o "openlist-$OUTPUT_NAME" .
 
-      - name: Upload binary
-        uses: actions/upload-artifact@main
-        with:
-          name: binary-openlist-${{ matrix.openlist_nickname }}
-          path: backend-src/openlist-${{ matrix.openlist_nickname }}
-          if-no-files-found: error
-          retention-days: 1
-
-  release:
-    name: Release OpenList binaries
-    needs: backend
-    runs-on: ubuntu-latest
-    steps:
       - name: Release
         uses: softprops/action-gh-release@master
         with:
@@ -152,11 +139,12 @@ jobs:
 
   openwrt:
     name: Build for ${{ matrix.patch_arch }}
+    needs: release
     runs-on: ubuntu-latest
     env:
       project_name: "luci-app-oplist"
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         include:
           - patch_arch: "x86_64"
@@ -188,6 +176,12 @@ jobs:
         with:
           sdk_arch: ${{ matrix.sdk_arch }}
 
+      - name: Download OpenList binary
+        uses: actions/download-artifact@main
+        with:
+          name: binary-openlist-${{ matrix.openlist_nickname }}
+          path: openlist-binary
+
       - name: Preparation before compilation
         shell: bash
         run: |
@@ -198,8 +192,9 @@ jobs:
           fi
           cd root/usr/bin/
           rm -f DONOTREMOVE
-          wget -O openlist https://github.com/morouter/luci-app-oplist/releases/download/OpenList/openlist-${{ matrix.openlist_nickname }}
-          chmod +x ./openlist
+          install -m 0755 \
+            "$GITHUB_WORKSPACE/openlist-binary/openlist-${{ matrix.openlist_nickname }}" \
+            ./openlist
           cd ../../etc/openlist
           rm DONOTREMOVE
 
@@ -219,8 +214,8 @@ jobs:
         with:
           tag_name: V${{ steps.get_version.outputs.version }}
           files: |
-            ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/*.apk
-            ${{ github.workspace }}/*.apk
+            ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-*.apk
+            ${{ github.workspace }}/luci-app-oplist-*.apk
           body: |
             # 📝 Release Note
             - Fixes and improvements
