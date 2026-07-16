@@ -18,19 +18,19 @@ jobs:
       matrix:
         include:
           - tag: "GOAMD64=v4"
-            openlist_nickname: "linux-glibc-amd64v4"
+            openlist_nickname: "linux-amd64v4-glibc"
           - tag: "GOAMD64=v3"
-            openlist_nickname: "linux-glibc-amd64v3"
+            openlist_nickname: "linux-amd64v3-glibc"
           - tag: "GOAMD64=v2"
-            openlist_nickname: "linux-glibc-amd64v2"
+            openlist_nickname: "linux-amd64v2-glibc"
           - tag: "GOAMD64=v1"
-            openlist_nickname: "linux-glibc-amd64v1"
+            openlist_nickname: "linux-amd64v1-glibc"
           - tag: ""
-            openlist_nickname: "linux-glibc-amd64"
+            openlist_nickname: "linux-amd64-glibc"
           - tag: "CGO_ENABLED=0"
-            openlist_nickname: "linux-musl-amd64"
+            openlist_nickname: "linux-amd64-musl"
           - tag: "GOARCH=arm64"
-            openlist_nickname: "linux-musl-arm64"
+            openlist_nickname: "linux-arm64-musl"
           - tag: "GOOS=darwin GOARCH=arm64"
             openlist_nickname: "darwin-arm64"
           - tag: "GOOS=windows GOARCH=amd64"
@@ -119,10 +119,10 @@ jobs:
         include:
           - patch_arch: "x86_64"
             sdk_arch: "x86-64"
-            openlist_nickname: "linux-musl-amd64"
+            openlist_nickname: "linux-amd64-musl"
           - patch_arch: "aarch64_generic"
             sdk_arch: "rockchip-armv8"
-            openlist_nickname: "linux-musl-arm64"
+            openlist_nickname: "linux-arm64-musl"
     steps:
       - name: Checkout
         uses: actions/checkout@main
