@@ -42,6 +42,39 @@ return view.extend({
       ),
     );
 
+    function getLogView() {
+      return log_textarea.querySelector("pre");
+    }
+
+    function isAtBottom(log) {
+      return !log || log.scrollHeight - log.scrollTop - log.clientHeight <= 2;
+    }
+
+    function refreshLog(force) {
+      var currentLog = getLogView();
+      if (!force && !isAtBottom(currentLog)) return Promise.resolve();
+
+      return fs
+        .read_direct("/etc/openlist/log/log.log", "text")
+        .then(function (res) {
+          var log = E("pre", { wrap: "pre" }, [
+            res.trim() || _("Log is empty."),
+          ]);
+          dom.content(log_textarea, log);
+          log.scrollTop = log.scrollHeight;
+        })
+        .catch(function (err) {
+          var log;
+          if (err.toString().includes("NotFoundError"))
+            log = E("pre", { wrap: "pre" }, [_("Log file does not exist.")]);
+          else
+            log = E("pre", { wrap: "pre" }, [
+              _("Unknown error: %s").format(err),
+            ]);
+          dom.content(log_textarea, log);
+        });
+    }
+
     function handleClearLog(ev) {
       var btn = ev.target;
       return ui.showModal(_("Clear log"), [
@@ -63,7 +96,7 @@ return view.extend({
           E(
             "button",
             {
-              class: "btn cbi-button-negative",
+              class: "btn cbi-button-save",
               click: function () {
                 btn.disabled = true;
                 return fs
@@ -94,29 +127,7 @@ return view.extend({
       ]);
     }
 
-    poll.add(
-      L.bind(function () {
-        return fs
-          .read_direct("/etc/openlist/log/log.log", "text")
-          .then(function (res) {
-            var log = E("pre", { wrap: "pre" }, [
-              res.trim() || _("Log is empty."),
-            ]);
-            dom.content(log_textarea, log);
-            log.scrollTop = log.scrollHeight;
-          })
-          .catch(function (err) {
-            var log;
-            if (err.toString().includes("NotFoundError"))
-              log = E("pre", { wrap: "pre" }, [_("Log file does not exist.")]);
-            else
-              log = E("pre", { wrap: "pre" }, [
-                _("Unknown error: %s").format(err),
-              ]);
-            dom.content(log_textarea, log);
-          });
-      }),
-    );
+    poll.add(L.bind(refreshLog, this, false), 5);
 
     return E([
       E("style", [css]),
@@ -130,15 +141,32 @@ return view.extend({
                 "display: flex; justify-content: space-between; align-items: center; margin-top: 10px;",
             },
             [
+              E("div", {}, [
+                E(
+                  "button",
+                  {
+                    class: "btn cbi-button-save",
+                    click: ui.createHandlerFn(this, handleClearLog),
+                  },
+                  _("Clear log"),
+                ),
+                " ",
+                E(
+                  "button",
+                  {
+                    class: "btn cbi-button-action",
+                    click: ui.createHandlerFn(this, function () {
+                      return refreshLog(true);
+                    }),
+                  },
+                  _("Refresh now"),
+                ),
+              ]),
               E(
-                "button",
-                {
-                  class: "btn cbi-button-negative",
-                  click: ui.createHandlerFn(this, handleClearLog),
-                },
-                _("Clear log"),
+                "small",
+                {},
+                _("Auto-refreshes every 5 seconds while viewing the latest logs."),
               ),
-              E("small", {}, _("Refresh every 5 seconds.")),
             ],
           ),
         ]),

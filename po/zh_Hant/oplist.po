@@ -1,5 +1,5 @@
 # luci-app-oplist - Traditional Chinese Translation
-SPDX-License-Identifier: AGPL-3.0
+# SPDX-License-Identifier: AGPL-3.0
 #
 msgid ""
 msgstr ""
@@ -21,17 +21,35 @@ msgstr "未運行"
 msgid "LuCI support for OpenList"
 msgstr "OpenList的LuCI支援"
 
-msgid "If you need to modify options that are not available, please edit the /etc/openlist/config.json file."
-msgstr "如果你需要修改我們沒有的選項，請編輯/etc/openlist/config.json檔案。"
-
 msgid "Default username/password: admin/password"
 msgstr "默認用戶名/密碼：admin/password"
 
 msgid "Enable Service"
 msgstr "啟用服務"
 
+msgid "Listen Address"
+msgstr "監聽地址"
+
+msgid "Address on which OpenList listens. Use 0.0.0.0 for all IPv4 interfaces or :: for all IPv6 interfaces."
+msgstr "OpenList 的監聽地址。使用 0.0.0.0 監聽所有 IPv4 介面，或使用 :: 監聽所有 IPv6 介面。"
+
 msgid "HTTP Listen Port"
 msgstr "HTTP偵聽端口"
+
+msgid "Site URL"
+msgstr "站點 URL"
+
+msgid "Login Expiration (hours)"
+msgstr "登入有效期（小時）"
+
+msgid "Max Connections"
+msgstr "最大連線數"
+
+msgid "Max Concurrency"
+msgstr "最大並行數"
+
+msgid "Delayed Start (seconds)"
+msgstr "延遲啟動（秒）"
 
 msgid "Enable TLS"
 msgstr "啟用TLS"
@@ -60,11 +78,47 @@ msgstr "啟用日誌記錄"
 msgid "Max log size (MB)"
 msgstr "最大日誌大小（單位：MB）"
 
+msgid "Max Log Backups"
+msgstr "最大日誌備份數量"
+
+msgid "Max Log Age (days)"
+msgstr "日誌最長保留時間（天）"
+
+msgid "Compress Rotated Logs"
+msgstr "壓縮輪替日誌"
+
+msgid "Enable Log Filter"
+msgstr "啟用日誌過濾"
+
 msgid "Cache Directory"
 msgstr "緩存目錄"
 
 msgid "Directory for temporary files during upload."
 msgstr "臨時緩存上傳的文件的目錄。"
+
+msgid "Enable S3 Server"
+msgstr "啟用 S3 服務"
+
+msgid "S3 Listen Port"
+msgstr "S3 監聽端口"
+
+msgid "Enable S3 TLS"
+msgstr "啟用 S3 TLS"
+
+msgid "Enable FTP Server"
+msgstr "啟用 FTP 服務"
+
+msgid "FTP Listen Address"
+msgstr "FTP 監聽地址"
+
+msgid "Enable SFTP Server"
+msgstr "啟用 SFTP 服務"
+
+msgid "SFTP Listen Address"
+msgstr "SFTP 監聽地址"
+
+msgid "Enable MCP Server"
+msgstr "啟用 MCP 服務"
 
 msgid "Collecting data..."
 msgstr "收集數據中..."
@@ -76,7 +130,7 @@ msgid "Log file does not exist."
 msgstr "日誌文件不存在"
 
 msgid "Unknown error: %s"
-msgstr "未知錯誤："
+msgstr "未知錯誤：%s"
 
 msgid "This will permanently erase the current log file. Continue?"
 msgstr "這個操作將永久刪除日誌文件，您確定嗎？"
@@ -92,3 +146,9 @@ msgstr "刪除日誌失敗：%s"
 
 msgid "Refresh every 5 seconds."
 msgstr "每5秒刷新一次。"
+
+msgid "Refresh now"
+msgstr "立即刷新"
+
+msgid "Auto-refreshes every 5 seconds while viewing the latest logs."
+msgstr "查看最新日誌時每 5 秒自動刷新，向上翻閱後自動暫停。"

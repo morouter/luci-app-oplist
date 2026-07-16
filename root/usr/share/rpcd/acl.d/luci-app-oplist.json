@@ -5,7 +5,6 @@
       "file": {
         "/etc/openlist/log/log.log": ["read"]
       },
-      "cgi-io": ["download"],
       "uci": ["oplist"],
       "ubus": {
         "service": ["list"],
@@ -18,7 +17,7 @@
       },
       "uci": ["oplist"],
       "ubus": {
-        "uci": ["set", "commit"]
+        "uci": ["set", "commit", "apply", "confirm"]
       }
     }
   }

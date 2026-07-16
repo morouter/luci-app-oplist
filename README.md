@@ -22,7 +22,7 @@ openlist [username] random --data /etc/openlist
 ```
 > Or any password you want
 ```
-openlist --data /etc/openlist set [username] [password]
+openlist [username] set [password] --data /etc/openlist
 ```
 - Cannot be start?
 Check your port and make sure not already in use

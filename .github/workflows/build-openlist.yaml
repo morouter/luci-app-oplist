@@ -5,41 +5,17 @@ on:
     - cron: "0 0 */3 * *"
   push:
   workflow_dispatch:
+
 permissions:
   contents: write
+
 jobs:
-  build:
-    name: Build for ${{ matrix.openlist_nickname }}
+  frontend:
+    name: Build OpenList front-end
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - tag: "GOAMD64=v4"
-            openlist_nickname: "linux-glibc-amd64v4"
-          - tag: "GOAMD64=v3"
-            openlist_nickname: "linux-glibc-amd64v3"
-          - tag: "GOAMD64=v2"
-            openlist_nickname: "linux-glibc-amd64v2"
-          - tag: "GOAMD64=v1"
-            openlist_nickname: "linux-glibc-amd64v1"
-          - tag: ""
-            openlist_nickname: "linux-glibc-amd64"
-          - tag: "CGO_ENABLED=0"
-            openlist_nickname: "linux-musl-amd64"
-          - tag: "GOARCH=arm64"
-            openlist_nickname: "linux-musl-arm64"
-          - tag: "GOOS=darwin GOARCH=arm64"
-            openlist_nickname: "darwin-arm64"
-          - tag: "GOOS=windows GOARCH=amd64"
-            openlist_nickname: "windows-amd64.exe"
-
+    outputs:
+      web_version: ${{ steps.version.outputs.web_version }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@main
-        with:
-          path: useless/
-
       - name: Set up Node.js
         uses: actions/setup-node@main
         with:
@@ -47,59 +23,127 @@ jobs:
 
       - name: Clone OpenList Front-End
         shell: bash
-        run: |
-          git clone --depth 1 https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
+        run: git clone --depth 1 https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
 
       - name: Set up pnpm
         uses: pnpm/action-setup@master
         with:
           package_json_file: frontend-src/package.json
-      
+
       - name: Build OpenList Front-End
         shell: bash
         run: |
+          set -euo pipefail
           cd frontend-src
-          pnpm install
+          pnpm install --frozen-lockfile
           pnpm build
-      
+
+      - name: Get front-end version
+        id: version
+        shell: bash
+        run: echo "web_version=$(git -C frontend-src describe --long --tags --always)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload front-end
+        uses: actions/upload-artifact@main
+        with:
+          name: openlist-frontend
+          path: frontend-src/dist/
+          if-no-files-found: error
+          retention-days: 1
+
+  backend:
+    name: Build ${{ matrix.openlist_nickname }}
+    needs: frontend
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - openlist_nickname: linux-glibc-amd64v4
+            goamd64: v4
+          - openlist_nickname: linux-glibc-amd64v3
+            goamd64: v3
+          - openlist_nickname: linux-glibc-amd64v2
+            goamd64: v2
+          - openlist_nickname: linux-glibc-amd64v1
+            goamd64: v1
+          - openlist_nickname: linux-glibc-amd64
+          - openlist_nickname: linux-musl-amd64
+            cgo_enabled: "0"
+          - openlist_nickname: linux-musl-arm64
+            goos: linux
+            goarch: arm64
+            cgo_enabled: "0"
+          - openlist_nickname: darwin-arm64
+            goos: darwin
+            goarch: arm64
+            cgo_enabled: "0"
+          - openlist_nickname: windows-amd64.exe
+            goos: windows
+            goarch: amd64
+            cgo_enabled: "0"
+    steps:
       - name: Set up Go
         uses: actions/setup-go@main
         with:
-          go-version: "stable"
+          go-version: stable
+
+      - name: Clone OpenList Back-End
+        shell: bash
+        run: git clone --depth 1 https://github.com/OpenListTeam/OpenList.git backend-src
+
+      - name: Download front-end
+        uses: actions/download-artifact@main
+        with:
+          name: openlist-frontend
+          path: backend-src/public/dist
 
       - name: Build OpenList Back-End
         shell: bash
+        env:
+          CGO_ENABLED: ${{ matrix.cgo_enabled }}
+          GOARCH: ${{ matrix.goarch }}
+          GOOS: ${{ matrix.goos }}
+          GOAMD64: ${{ matrix.goamd64 }}
+          OUTPUT_NAME: ${{ matrix.openlist_nickname }}
+          WEB_VERSION: ${{ needs.frontend.outputs.web_version }}
         run: |
-          git clone --depth 1 https://github.com/OpenListTeam/OpenList.git backend-src
+          set -euo pipefail
           cd backend-src
-          bash build.sh dev web
 
           builtAt="$(date +'%F %T %z')"
           goVersion=$(go version | sed 's/go version //')
           gitAuthor=$(git show -s --format='format:%aN <%ae>' HEAD)
           gitCommit=$(git log --pretty=format:"%h" -1)
           version=$(git describe --long --tags --dirty --always)
-          webVersion=$(curl -s --max-time 5 "https://api.github.com/repos/OpenListTeam/OpenList-Frontend/releases/latest" -L | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | sed 's/^v//')
-          if [ -z "$webVersion" ]; then
-              exit 1
-          fi
           ldflags="-w -s \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.BuiltAt=$builtAt' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.GoVersion=$goVersion' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.GitAuthor=$gitAuthor' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.GitCommit=$gitCommit' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.Version=$version' \
-            -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.WebVersion=$webVersion'"
+            -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.WebVersion=$WEB_VERSION'"
 
-          ${{ matrix.tag }} go build -ldflags "$ldflags" -o openlist .
-          chmod +x openlist
-          mv ./openlist ${{ github.workspace }}/openlist-${{ matrix.openlist_nickname }}
+          go build -ldflags "$ldflags" -o "openlist-$OUTPUT_NAME" .
 
+      - name: Upload binary
+        uses: actions/upload-artifact@main
+        with:
+          name: binary-openlist-${{ matrix.openlist_nickname }}
+          path: backend-src/openlist-${{ matrix.openlist_nickname }}
+          if-no-files-found: error
+          retention-days: 1
+
+  release:
+    name: Release OpenList binaries
+    needs: backend
+    runs-on: ubuntu-latest
+    steps:
       - name: Release
         uses: softprops/action-gh-release@master
         with:
           tag_name: OpenList
-          files: ${{ github.workspace }}/openlist-${{ matrix.openlist_nickname }}
+          files: dist/openlist-*
           body: |
             # OpenList binary
             - With high performance made by MoAEIOU & GitHub Actions

@@ -6,40 +6,22 @@ USE_PROCD=1
 BINARY="/usr/bin/openlist"
 CONF_DIR="/etc/openlist"
 CONF_FILE="$CONF_DIR/config.json"
+CONFIG_UPDATER="/usr/share/oplist/update-config.uc"
 
-_sed_escape() {
-    printf '%s' "$1" | sed -e 's/[\\|&]/\\&/g'
-}
+update_config() {
+    local tmp_file="$CONF_FILE.tmp.$$"
 
-patch_val() {
-    local key="$1"
-    local val="$2"
-    local is_str="$3"
-    [ -z "$val" ] && return
-
-    local esc_key
-    esc_key="$(_sed_escape "$key")"
-
-    if [ "$is_str" -eq 1 ]; then
-        # Strip any embedded double quotes/backslashes from the raw value
-        # before it becomes a JSON string literal.
-        local safe_val esc_val
-        safe_val="$(printf '%s' "$val" | tr -d '"' | tr -d '\\')"
-        esc_val="$(_sed_escape "$safe_val")"
-        sed -i "s|\"$esc_key\": *\"[^\"]*\"|\"$esc_key\": \"$esc_val\"|" "$CONF_FILE"
-    else
-        # Numeric/boolean literal: only allow [0-9a-zA-Z.+-], anything else
-        # is rejected to guarantee valid, injection-free JSON.
-        case "$val" in
-            *[!0-9a-zA-Z.+-]*)
-                logger -t oplist "refusing to patch '$key': invalid literal value '$val'"
-                return
-                ;;
-        esac
-        local esc_val
-        esc_val="$(_sed_escape "$val")"
-        sed -i "s|\"$esc_key\": *[^,}]*|\"$esc_key\": $esc_val|" "$CONF_FILE"
+    if ! ucode "$CONFIG_UPDATER" "$CONF_FILE" "$@" >"$tmp_file"; then
+        logger -t oplist "failed to update $CONF_FILE"
+        rm -f "$tmp_file"
+        return 1
     fi
+
+    chmod 600 "$tmp_file" || {
+        rm -f "$tmp_file"
+        return 1
+    }
+    mv -f "$tmp_file" "$CONF_FILE"
 }
 
 start_service() {
@@ -75,7 +57,9 @@ start_service() {
         fi
     fi
 
-    local port addr tls_en https_p cert key h3_en expire conn log_en log_size
+    local port addr tls_en https_p cert key h3_en expire conn concurrency delayed
+    local site_url log_en log_size log_backups log_age log_compress log_filter force_https
+    local s3_en s3_port s3_ssl ftp_en ftp_listen sftp_en sftp_listen mcp_en
 
     config_get port main port "5244"
     config_get addr main listen_addr "0.0.0.0"
@@ -86,37 +70,39 @@ start_service() {
     config_get_bool h3_en main h3_enable 0
     config_get expire main site_login_expire "48"
     config_get conn main site_max_connections "0"
+    config_get concurrency main max_concurrency "64"
+    config_get delayed main delayed_start "0"
+    config_get site_url main site_url ""
     config_get_bool log_en main log_enable 1
-    config_get log_size main log_max_size "50"
-
-    patch_val "address" "$addr" 1
-    patch_val "http_port" "$port" 0
-    patch_val "token_expires_in" "$expire" 0
-    patch_val "max_connections" "$conn" 0
+    config_get log_size main log_max_size "5"
+    config_get log_backups main log_max_backups "30"
+    config_get log_age main log_max_age "28"
+    config_get_bool log_compress main log_compress 0
+    config_get_bool log_filter main log_filter_enable 0
+    config_get_bool s3_en main s3_enable 0
+    config_get s3_port main s3_port "5246"
+    config_get_bool s3_ssl main s3_ssl 0
+    config_get_bool ftp_en main ftp_enable 0
+    config_get ftp_listen main ftp_listen ":5221"
+    config_get_bool sftp_en main sftp_enable 0
+    config_get sftp_listen main sftp_listen ":5222"
+    config_get_bool mcp_en main mcp_enable 0
 
     if [ "$tls_en" -eq 1 ]; then
-        patch_val "force_https" "true" 0
-        patch_val "https_port" "$https_p" 0
-        [ -n "$cert" ] && patch_val "cert_file" "$cert" 1
-        [ -n "$key" ] && patch_val "key_file" "$key" 1
-
-        if [ "$h3_en" -eq 1 ]; then
-            patch_val "enable_h3" "true" 0
-        else
-            patch_val "enable_h3" "false" 0
-        fi
+        force_https=1
     else
-        patch_val "force_https" "false" 0
-        patch_val "enable_h3" "false" 0
+        force_https=0
+        h3_en=0
     fi
 
     local temp_d
     config_get temp_d main temp_dir "/etc/openlist/temp"
-    patch_val "temp_dir" "$temp_d" 1
-
-    [ "$log_en" -eq 1 ] && patch_val "enable" "true" 0 || patch_val "enable" "false" 0
-    patch_val "max_size" "$log_size" 0
-    patch_val "name" "$CONF_DIR/log/log.log" 1
+    update_config \
+        "$addr" "$port" "$force_https" "$https_p" "$cert" "$key" \
+        "$h3_en" "$expire" "$conn" "$temp_d" "$log_en" "$log_size" \
+        "$site_url" "$concurrency" "$delayed" "$log_backups" "$log_age" \
+        "$log_compress" "$log_filter" "$s3_en" "$s3_port" "$s3_ssl" \
+        "$ftp_en" "$ftp_listen" "$sftp_en" "$sftp_listen" "$mcp_en" || return 1
 
     procd_open_instance "instance1"
     procd_set_param command "$BINARY" server --data "$CONF_DIR"
