@@ -139,7 +139,7 @@ jobs:
 
   openwrt:
     name: Build for ${{ matrix.patch_arch }}
-    needs: release
+    needs: backend
     runs-on: ubuntu-latest
     env:
       project_name: "luci-app-oplist"
