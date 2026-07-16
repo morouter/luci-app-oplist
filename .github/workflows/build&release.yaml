@@ -108,7 +108,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   OpenWrt:
-    name: Build for ${{ matrix.patch_arch }}
+    name: Build for openwrt-${{ matrix.patch_arch }}
     needs: OpenList
     runs-on: ubuntu-latest
     env:
