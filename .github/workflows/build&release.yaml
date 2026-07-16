@@ -14,7 +14,7 @@ jobs:
     name: Build for ${{ matrix.openlist_nickname }}
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         include:
           - tag: "GOAMD64=v4"
@@ -114,7 +114,7 @@ jobs:
     env:
       project_name: "luci-app-oplist"
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         include:
           - patch_arch: "x86_64"
@@ -177,8 +177,8 @@ jobs:
         with:
           tag_name: V${{ steps.get_version.outputs.version }}
           files: |
-            ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/*.apk
-            ${{ github.workspace }}/*.apk
+            ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-*.apk
+            ${{ github.workspace }}/luci-app-oplist-*.apk
           body: |
             # 📝 Release Note
             - Fixes and improvements
