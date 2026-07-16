@@ -10,12 +10,15 @@ permissions:
   contents: write
 
 jobs:
-  frontend:
-    name: Build OpenList front-end
+  OpenList:
+    name: Build OpenList binary
     runs-on: ubuntu-latest
-    outputs:
-      web_version: ${{ steps.version.outputs.web_version }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@main
+        with:
+          path: useless/
+
       - name: Set up Node.js
         uses: actions/setup-node@main
         with:
@@ -23,7 +26,8 @@ jobs:
 
       - name: Clone OpenList Front-End
         shell: bash
-        run: git clone --depth 1 https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
+        run: |
+          git clone --depth 1 https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
 
       - name: Set up pnpm
         uses: pnpm/action-setup@master
@@ -33,118 +37,62 @@ jobs:
       - name: Build OpenList Front-End
         shell: bash
         run: |
-          set -euo pipefail
           cd frontend-src
-          pnpm install --frozen-lockfile
+          pnpm install
           pnpm build
 
-      - name: Get front-end version
-        id: version
-        shell: bash
-        run: echo "web_version=$(git -C frontend-src describe --long --tags --always)" >> "$GITHUB_OUTPUT"
-
-      - name: Upload front-end
-        uses: actions/upload-artifact@main
-        with:
-          name: openlist-frontend
-          path: frontend-src/dist/
-          if-no-files-found: error
-          retention-days: 1
-
-  backend:
-    name: Build ${{ matrix.openlist_nickname }}
-    needs: frontend
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        include:
-          - openlist_nickname: linux-glibc-amd64v4
-            goamd64: v4
-          - openlist_nickname: linux-glibc-amd64v3
-            goamd64: v3
-          - openlist_nickname: linux-glibc-amd64v2
-            goamd64: v2
-          - openlist_nickname: linux-glibc-amd64v1
-            goamd64: v1
-          - openlist_nickname: linux-glibc-amd64
-          - openlist_nickname: linux-musl-amd64
-            cgo_enabled: "0"
-          - openlist_nickname: linux-musl-arm64
-            goos: linux
-            goarch: arm64
-            cgo_enabled: "0"
-          - openlist_nickname: darwin-arm64
-            goos: darwin
-            goarch: arm64
-            cgo_enabled: "0"
-          - openlist_nickname: windows-amd64.exe
-            goos: windows
-            goarch: amd64
-            cgo_enabled: "0"
-    steps:
       - name: Set up Go
         uses: actions/setup-go@main
         with:
-          go-version: stable
-
-      - name: Clone OpenList Back-End
-        shell: bash
-        run: git clone --depth 1 https://github.com/OpenListTeam/OpenList.git backend-src
-
-      - name: Download front-end
-        uses: actions/download-artifact@main
-        with:
-          name: openlist-frontend
-          path: backend-src/public/dist
+          go-version: "stable"
 
       - name: Build OpenList Back-End
         shell: bash
-        env:
-          CGO_ENABLED: ${{ matrix.cgo_enabled }}
-          GOARCH: ${{ matrix.goarch }}
-          GOOS: ${{ matrix.goos }}
-          GOAMD64: ${{ matrix.goamd64 }}
-          OUTPUT_NAME: ${{ matrix.openlist_nickname }}
-          WEB_VERSION: ${{ needs.frontend.outputs.web_version }}
         run: |
-          set -euo pipefail
+          git clone --depth 1 https://github.com/OpenListTeam/OpenList.git backend-src
           cd backend-src
+          bash build.sh dev web
 
           builtAt="$(date +'%F %T %z')"
           goVersion=$(go version | sed 's/go version //')
           gitAuthor=$(git show -s --format='format:%aN <%ae>' HEAD)
           gitCommit=$(git log --pretty=format:"%h" -1)
           version=$(git describe --long --tags --dirty --always)
+          webVersion=$(curl -s --max-time 5 "https://api.github.com/repos/OpenListTeam/OpenList-Frontend/releases/latest" -L | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | sed 's/^v//')
+          if [ -z "$webVersion" ]; then
+              exit 1
+          fi
           ldflags="-w -s \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.BuiltAt=$builtAt' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.GoVersion=$goVersion' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.GitAuthor=$gitAuthor' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.GitCommit=$gitCommit' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.Version=$version' \
-            -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.WebVersion=$WEB_VERSION'"
+            -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.WebVersion=$webVersion'"
 
-          go build -ldflags "$ldflags" -o "openlist-$OUTPUT_NAME" .
+          ${{ matrix.tag }} go build -ldflags "$ldflags" -o openlist .
+          chmod +x openlist
+          mv ./openlist ${{ github.workspace }}/openlist-${{ matrix.openlist_nickname }}
 
       - name: Release
         uses: softprops/action-gh-release@master
         with:
           tag_name: OpenList
-          files: dist/openlist-*
+          files: ${{ github.workspace }}/openlist-${{ matrix.openlist_nickname }}
           body: |
             # OpenList binary
             - With high performance made by MoAEIOU & GitHub Actions
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  openwrt:
+  OpenWrt:
     name: Build for ${{ matrix.patch_arch }}
-    needs: backend
+    needs: OpenList
     runs-on: ubuntu-latest
     env:
       project_name: "luci-app-oplist"
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         include:
           - patch_arch: "x86_64"
@@ -176,12 +124,6 @@ jobs:
         with:
           sdk_arch: ${{ matrix.sdk_arch }}
 
-      - name: Download OpenList binary
-        uses: actions/download-artifact@main
-        with:
-          name: binary-openlist-${{ matrix.openlist_nickname }}
-          path: openlist-binary
-
       - name: Preparation before compilation
         shell: bash
         run: |
@@ -192,9 +134,8 @@ jobs:
           fi
           cd root/usr/bin/
           rm -f DONOTREMOVE
-          install -m 0755 \
-            "$GITHUB_WORKSPACE/openlist-binary/openlist-${{ matrix.openlist_nickname }}" \
-            ./openlist
+          wget -O openlist https://github.com/morouter/luci-app-oplist/releases/download/OpenList/openlist-${{ matrix.openlist_nickname }}
+          chmod +x ./openlist
           cd ../../etc/openlist
           rm DONOTREMOVE
 
@@ -214,15 +155,11 @@ jobs:
         with:
           tag_name: V${{ steps.get_version.outputs.version }}
           files: |
-            ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-*.apk
-            ${{ github.workspace }}/luci-app-oplist-*.apk
+            ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/*.apk
+            ${{ github.workspace }}/*.apk
           body: |
             # 📝 Release Note
             - Fixes and improvements
-            # ⚠️ Breaking Changes
-            - Back up `/etc/openlist` before upgrading.
-            - Delete `/etc/openlist/config.json` and restart OpenList to regenerate the configuration.
-            - Keep `/etc/openlist/data.db`, otherwise all OpenList data will be lost.
-            - If you encounter any problems, please open an issue.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
