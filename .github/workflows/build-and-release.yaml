@@ -99,11 +99,12 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@master
         with:
-          tag_name: OpenList
+          tag_name: openlist
           files: ${{ github.workspace }}/openlist-${{ matrix.openlist_nickname }}
           body: |
             # OpenList binary
-            - With high performance made by MoAEIOU & GitHub Actions
+            - High performance build
+            made by MoAEIOU & GitHub Actions
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
