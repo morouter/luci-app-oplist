@@ -105,7 +105,7 @@ jobs:
             # ⚙ OpenList
             High performance build binary kernel
             ## 📏 Filename Rule
-            `openlist-archoptimization-LibC`
+            `openlist-arch(optimize)-libc(only linux)`
 
             For example: `openlist-amd64v4-glibc`
             ## Mirrored at <https://867678.xyz/doc/Mirror>
