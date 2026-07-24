@@ -11,8 +11,24 @@
     "title": "Config",
     "order": 1,
     "action": {
+      "type": "alias",
+      "path": "admin/services/oplist/config/main"
+    }
+  },
+  "admin/services/oplist/config/main": {
+    "title": "Main",
+    "order": 1,
+    "action": {
       "type": "view",
       "path": "oplist/index"
+    }
+  },
+  "admin/services/oplist/config/advanced": {
+    "title": "Advanced",
+    "order": 2,
+    "action": {
+      "type": "view",
+      "path": "oplist/advanced"
     }
   },
   "admin/services/oplist/log": {

@@ -41,36 +41,41 @@ return view.extend({
         _("Collecting data..."),
       ),
     );
+    var lastLogContent = null;
+    var autoRefresh = true;
+    var pauseButton;
 
-    function getLogView() {
-      return log_textarea.querySelector("pre");
-    }
-
-    function isAtBottom(log) {
-      return !log || log.scrollHeight - log.scrollTop - log.clientHeight <= 2;
+    function setPauseButtonLabel() {
+      dom.content(
+        pauseButton,
+        autoRefresh ? _("Pause auto-refresh") : _("Resume auto-refresh"),
+      );
     }
 
     function refreshLog(force) {
-      var currentLog = getLogView();
-      if (!force && !isAtBottom(currentLog)) return Promise.resolve();
+      if (!force && !autoRefresh) return Promise.resolve();
 
       return fs
-        .read_direct("/etc/openlist/log/log.log", "text")
+        .exec_direct("/usr/share/oplist/tail-log", [], "text")
         .then(function (res) {
-          var log = E("pre", { wrap: "pre" }, [
-            res.trim() || _("Log is empty."),
-          ]);
+          var content = res.trim();
+          if (content === lastLogContent) return;
+
+          lastLogContent = content;
+          var log = E("pre", { wrap: "pre" }, [content || _("Log is empty.")]);
           dom.content(log_textarea, log);
           log.scrollTop = log.scrollHeight;
         })
         .catch(function (err) {
-          var log;
-          if (err.toString().includes("NotFoundError"))
-            log = E("pre", { wrap: "pre" }, [_("Log file does not exist.")]);
-          else
-            log = E("pre", { wrap: "pre" }, [
-              _("Unknown error: %s").format(err),
-            ]);
+          var error = err.toString();
+          var content =
+            error.includes("NotFoundError") || error.includes("No such file")
+              ? _("Log file does not exist.")
+              : _("Unknown error: %s").format(err);
+          if (content === lastLogContent) return;
+
+          lastLogContent = content;
+          var log = E("pre", { wrap: "pre" }, [content]);
           dom.content(log_textarea, log);
         });
     }
@@ -103,6 +108,7 @@ return view.extend({
                   .write("/etc/openlist/log/log.log", "")
                   .then(function () {
                     ui.hideModal();
+                    lastLogContent = "";
                     dom.content(
                       log_textarea,
                       E("pre", { wrap: "pre" }, [_("Log is empty.")]),
@@ -129,16 +135,28 @@ return view.extend({
 
     poll.add(L.bind(refreshLog, this, false), 5);
 
+    pauseButton = E(
+      "button",
+      {
+        class: "btn cbi-button-action",
+        click: ui.createHandlerFn(this, function () {
+          autoRefresh = !autoRefresh;
+          setPauseButtonLabel();
+          return autoRefresh ? refreshLog(true) : Promise.resolve();
+        }),
+      },
+      _("Pause auto-refresh"),
+    );
+
     return E([
       E("style", [css]),
       E("div", { class: "cbi-map" }, [
         E("div", { class: "cbi-section" }, [
-          log_textarea,
           E(
             "div",
             {
               style:
-                "display: flex; justify-content: space-between; align-items: center; margin-top: 10px;",
+                "display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;",
             },
             [
               E("div", {}, [
@@ -151,6 +169,8 @@ return view.extend({
                   _("Clear log"),
                 ),
                 " ",
+                pauseButton,
+                " ",
                 E(
                   "button",
                   {
@@ -159,18 +179,19 @@ return view.extend({
                       return refreshLog(true);
                     }),
                   },
-                  _("Refresh now"),
+                  _("Refresh"),
                 ),
               ]),
               E(
                 "small",
                 {},
                 _(
-                  "Auto-refreshes every 5 seconds while viewing the latest logs.",
+                  "Shows the last 1000 lines and auto-refreshes every 5 seconds.",
                 ),
               ),
             ],
           ),
+          log_textarea,
         ]),
       ]),
     ]);

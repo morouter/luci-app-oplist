@@ -3,21 +3,41 @@
     "description": "ACL for luci-app-oplist",
     "read": {
       "file": {
-        "/etc/openlist/log/log.log": ["read"]
+        "/etc/openlist/log/log.log": [
+          "read"
+        ],
+        "/usr/share/oplist/tail-log": [
+          "exec"
+        ]
       },
-      "uci": ["oplist"],
+      "uci": [
+        "oplist"
+      ],
       "ubus": {
-        "service": ["list"],
-        "uci": ["get"]
+        "service": [
+          "list"
+        ],
+        "uci": [
+          "get"
+        ]
       }
     },
     "write": {
       "file": {
-        "/etc/openlist/log/log.log": ["write"]
+        "/etc/openlist/log/log.log": [
+          "write"
+        ]
       },
-      "uci": ["oplist"],
+      "uci": [
+        "oplist"
+      ],
       "ubus": {
-        "uci": ["set", "commit", "apply", "confirm"]
+        "uci": [
+          "set",
+          "commit",
+          "apply",
+          "confirm"
+        ]
       }
     }
   }

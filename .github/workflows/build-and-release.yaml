@@ -2,7 +2,7 @@ name: I only smoke when i drink
 
 on:
   schedule:
-    - cron: "0 0 */3 * *"
+    - cron: "10 0 */1 * *"
   push:
   workflow_dispatch:
 
@@ -102,9 +102,15 @@ jobs:
           tag_name: openlist
           files: ${{ github.workspace }}/openlist-${{ matrix.openlist_nickname }}
           body: |
-            # OpenList binary
-            - High performance build
-            made by MoAEIOU & GitHub Actions
+            # ⚙ OpenList
+            High performance build binary kernel
+            ## 📏 Filename Rule
+            `openlist-archoptimization-LibC`
+
+            For example: `openlist-amd64v4-glibc`
+            ## Mirrored at <https://867678.xyz/doc/Mirror>
+            ## Made by
+            MoAEIOU & GitHub Actions
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

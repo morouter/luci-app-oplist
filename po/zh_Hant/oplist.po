@@ -9,6 +9,12 @@ msgstr ""
 msgid "Config"
 msgstr "設定"
 
+msgid "Main"
+msgstr "主要"
+
+msgid "Advanced"
+msgstr "進階"
+
 msgid "Logs"
 msgstr "日誌"
 
@@ -21,8 +27,8 @@ msgstr "未運行"
 msgid "LuCI support for OpenList"
 msgstr "OpenList的LuCI支援"
 
-msgid "Default username/password: admin/password"
-msgstr "默認用戶名/密碼：admin/password"
+msgid "The initial admin password is randomly generated. Check the Logs page after enabling the service for the first time."
+msgstr "初始管理員密碼會隨機產生。首次啟用服務後，請前往日誌頁面查看。"
 
 msgid "Enable Service"
 msgstr "啟用服務"
@@ -159,8 +165,14 @@ msgstr "刪除日誌失敗：%s"
 msgid "Refresh every 5 seconds."
 msgstr "每5秒刷新一次。"
 
-msgid "Refresh now"
-msgstr "立即刷新"
+msgid "Pause auto-refresh"
+msgstr "暫停刷新"
 
-msgid "Auto-refreshes every 5 seconds while viewing the latest logs."
-msgstr "查看最新日誌時每 5 秒自動刷新，向上翻閱後自動暫停。"
+msgid "Resume auto-refresh"
+msgstr "繼續刷新"
+
+msgid "Refresh"
+msgstr "刷新一下"
+
+msgid "Shows the last 1000 lines and auto-refreshes every 5 seconds."
+msgstr "顯示最後 1000 行日誌，每 5 秒自動刷新一次。"

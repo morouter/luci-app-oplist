@@ -1,13 +1,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-oplist
-PKG_VERSION:=0.8.9
+PKG_VERSION:=0.9.0
 PKG_RELEASE:=1
 PKG_LICENSE:=AGPL-3.0
 
 LUCI_TITLE:=LuCI support for OpenList
 LUCI_PKGARCH:=x86_64
-LUCI_DEPENDS:=+ucode-mod-digest
+LUCI_DEPENDS:=+ucode-mod-uci
 
 include $(TOPDIR)/feeds/luci/luci.mk
 

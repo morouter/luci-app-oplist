@@ -11,7 +11,7 @@ CONFIG_UPDATER="/usr/share/oplist/update-config.uc"
 update_config() {
     local tmp_file="$CONF_FILE.tmp.$$"
 
-    if ! ucode "$CONFIG_UPDATER" "$CONF_FILE" "$@" >"$tmp_file"; then
+    if ! ucode "$CONFIG_UPDATER" "$CONF_FILE" >"$tmp_file"; then
         logger -t oplist "failed to update $CONF_FILE"
         rm -f "$tmp_file"
         return 1
@@ -33,7 +33,7 @@ start_service() {
     mkdir -p "$CONF_DIR"
 
     if [ ! -f "$CONF_FILE" ]; then
-        $BINARY server --data "$CONF_DIR" >/dev/null 2>&1 &
+        "$BINARY" server --data "$CONF_DIR" >/dev/null 2>&1 &
         local pid=$!
         local wait=0
         while [ ! -f "$CONF_FILE" ] && [ $wait -lt 10 ]; do
@@ -51,58 +51,12 @@ start_service() {
         wait "$pid" 2>/dev/null
 
         if [ ! -f "$CONF_FILE" ]; then
-            logger -t oplist "bootstrap failed: $CONF_FILE was not created, skipping admin password setup"
-        else
-            $BINARY admin set password --data "$CONF_DIR"
+            logger -t oplist "bootstrap failed: $CONF_FILE was not created"
+            return 1
         fi
     fi
 
-    local port addr tls_en https_p cert key h3_en expire conn concurrency delayed
-    local site_url log_en log_size log_backups log_age log_compress log_filter force_https
-    local s3_en s3_port s3_ssl ftp_en ftp_listen sftp_en sftp_listen mcp_en
-
-    config_get port main port "5244"
-    config_get addr main listen_addr "0.0.0.0"
-    config_get_bool tls_en main tls_enabled 0
-    config_get https_p main https_port "443"
-    config_get cert main tls_cert ""
-    config_get key main tls_key ""
-    config_get_bool h3_en main h3_enable 0
-    config_get expire main site_login_expire "48"
-    config_get conn main site_max_connections "0"
-    config_get concurrency main max_concurrency "64"
-    config_get delayed main delayed_start "0"
-    config_get site_url main site_url ""
-    config_get_bool log_en main log_enable 1
-    config_get log_size main log_max_size "5"
-    config_get log_backups main log_max_backups "30"
-    config_get log_age main log_max_age "28"
-    config_get_bool log_compress main log_compress 0
-    config_get_bool log_filter main log_filter_enable 0
-    config_get_bool s3_en main s3_enable 0
-    config_get s3_port main s3_port "5246"
-    config_get_bool s3_ssl main s3_ssl 0
-    config_get_bool ftp_en main ftp_enable 0
-    config_get ftp_listen main ftp_listen ":5221"
-    config_get_bool sftp_en main sftp_enable 0
-    config_get sftp_listen main sftp_listen ":5222"
-    config_get_bool mcp_en main mcp_enable 0
-
-    if [ "$tls_en" -eq 1 ]; then
-        force_https=1
-    else
-        force_https=0
-        h3_en=0
-    fi
-
-    local temp_d
-    config_get temp_d main temp_dir "/etc/openlist/temp"
-    update_config \
-        "$addr" "$port" "$force_https" "$https_p" "$cert" "$key" \
-        "$h3_en" "$expire" "$conn" "$temp_d" "$log_en" "$log_size" \
-        "$site_url" "$concurrency" "$delayed" "$log_backups" "$log_age" \
-        "$log_compress" "$log_filter" "$s3_en" "$s3_port" "$s3_ssl" \
-        "$ftp_en" "$ftp_listen" "$sftp_en" "$sftp_listen" "$mcp_en" || return 1
+    update_config || return 1
 
     procd_open_instance "instance1"
     procd_set_param command "$BINARY" server --data "$CONF_DIR"
