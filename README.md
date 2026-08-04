@@ -27,13 +27,13 @@ If you need to compile for another platform, change **x86_64** on line `9` of `.
 - OpenList passwords are encrypted and cannot be recovered, so they can only be reset.
 - Replace `[username]` and `[password]` with the actual username and password.
 
-```
+```bash
 openlist --data /etc/openlist [username] random
 ```
 
 Or set a password with you.
 
-```
+```bash
 openlist --data /etc/openlist [username] set [password]
 ```
 
@@ -48,7 +48,7 @@ openlist --data /etc/openlist [username] set [password]
 - It is assumed that you are already in the SDK root directory.
   Additional operations on the source code are required before compilation:
 
-```
+```bash
 cd ⚠️sdk-root/package/luci-app-oplist/root/usr/bin/
 rm DONOTREMOVE
 wget -O openlist https://github.com/morouter/luci-app-oplist/releases/download/openlist/openlist-linux-⚠️ARCH-⚠️LibC
@@ -63,14 +63,13 @@ And start compile
 
 ## 🙏 Acknowledgements
 
-Project: MoAEIOU
+Project: MoAEIOU <https://867678.xyz>
 
 AI: <https://claude.ai> <https://chatgpt.com>
 
 ## ⚖️ License
-
-This application was licensed under the [GNU Affero General Public License Version 3 (AGPL-3.0)](https://www.gnu.org/licenses/agpl-3.0.html).
-
 We also have included the [OpenList](https://github.com/OpenListTeam/OpenList) binary, which is developed by OpenListTeam and based on the AGPL-3.0 open source.
 
 The log viewer contains code adapted from <https://github.com/Internet1235/luci-app-openlist/blob/main/luci-app-openlist/htdocs/luci-static/resources/view/openlist/log.js>, licensed under Apache-2.0.
+
+This application was licensed under the [GNU Affero General Public License Version 3 (AGPL-3.0)](https://www.gnu.org/licenses/agpl-3.0.html).

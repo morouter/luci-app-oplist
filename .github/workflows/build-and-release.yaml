@@ -41,15 +41,15 @@ jobs:
         with:
           path: useless/
 
-      - name: Set up Node.js
-        uses: actions/setup-node@main
-        with:
-          node-version: latest
-
       - name: Clone OpenList Front-End
         shell: bash
         run: |
           git clone --depth 1 https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
+
+      - name: Set up Node.js
+        uses: actions/setup-node@main
+        with:
+          node-version: latest
 
       - name: Set up pnpm
         uses: pnpm/action-setup@master
@@ -93,9 +93,7 @@ jobs:
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.Version=$version' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.WebVersion=$webVersion'"
 
-          ${{ matrix.tag }} go build -ldflags "$ldflags" -o openlist .
-          chmod +x openlist
-          mv ./openlist ${{ github.workspace }}/openlist-${{ matrix.openlist_nickname }}
+          ${{ matrix.tag }} go build -ldflags "$ldflags" -o openlist-${{ matrix.openlist_nickname }} .
 
       - name: Release
         uses: softprops/action-gh-release@master
@@ -109,7 +107,8 @@ jobs:
             `openlist-os-arch(optimize)-libc(only linux)`
 
             For example: `openlist-amd64v4-glibc`
-            ## Mirrored at <https://867678.xyz/doc/Mirror>
+            ## Mirrored at
+            <https://867678.xyz/doc/Mirror>
             ## Made by
             MoAEIOU & GitHub Actions
         env:
@@ -178,7 +177,7 @@ jobs:
       - name: Rename compilation files
         shell: bash
         run: |
-          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-app*.apk $GITHUB_WORKSPACE/luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
+          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-app*.apk ${{ github.workspace }}/luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
 
       - name: Release
         uses: softprops/action-gh-release@master
