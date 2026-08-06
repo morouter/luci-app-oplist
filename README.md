@@ -10,6 +10,7 @@ LuCI support for OpenList
 ## ⬇️ Downloads
 
 [GitHub Release](https://github.com/morouter/luci-app-oplist/releases)
+[High performance rebuilt Openlist](https://github.com/morouter/luci-app-oplist/releases/tag/openlist)
 
 ## ⚠️ Warning
 
