@@ -29,7 +29,7 @@ jobs:
             openlist_nickname: "linux-amd64-glibc"
           - tag: "CGO_ENABLED=0"
             openlist_nickname: "linux-amd64-musl"
-          - tag: "GOARCH=arm64"
+          - tag: "CGO_ENABLED=0 GOARCH=arm64"
             openlist_nickname: "linux-arm64-musl"
           - tag: "GOOS=darwin GOARCH=arm64"
             openlist_nickname: "darwin-arm64"
