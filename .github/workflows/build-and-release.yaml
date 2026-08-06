@@ -93,7 +93,7 @@ jobs:
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.Version=$version' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.WebVersion=$webVersion'"
 
-          ${{ matrix.tag }} go build -ldflags "$ldflags" -o openlist-${{ matrix.openlist_nickname }} .
+          ${{ matrix.tag }} go build -ldflags "$ldflags" -o ../openlist-${{ matrix.openlist_nickname }} .
 
       - name: Release
         uses: softprops/action-gh-release@master
