@@ -1,6 +1,6 @@
-// The log shows a partial quote:
+// The log shows has included this project:
 // <https://github.com/Internet1235/luci-app-openlist/blob/main/luci-app-openlist/htdocs/luci-static/resources/view/openlist/log.js>
-// With Apache-2.0 License , here changed to AGPL-v3.0
+// Licensed under the Apache-2.0 License , here changed to AGPL-v3.0
 
 "use strict";
 "require fs";
@@ -12,20 +12,32 @@
 return view.extend({
   render: function () {
     var css =
-      "                     \
-    #log_textarea {         \
-    padding: 10px;          \
-    text-align: left;       \
-    }                       \
-    #log_textarea pre {     \
-    padding: .5rem;         \
-    word-break: break-all;  \
-    margin: 0;              \
-    white-space: pre-wrap;  \
-    max-height: 70vh;       \
-    overflow-y: auto;       \
-    background: #f4f4f4;  \
-    border: 1px solid #ccc;\
+      "                                             \
+    #log_textarea {                                 \
+    padding: 10px;                                  \
+    text-align: left;                               \
+    }                                               \
+    #log_textarea pre {                             \
+    padding: .5rem;                                 \
+    word-break: break-all;                          \
+    margin: 0;                                      \
+    white-space: pre-wrap;                          \
+    max-height: 70vh;                               \
+    overflow-y: auto;                               \
+    background: #f4f4f4;                            \
+    border: 1px solid #ccc;                         \
+    }                                               \
+    :root[data-darkmode=\"true\"] #log_textarea pre {\
+    background: #1e1e1e;                            \
+    border: 1px solid #444;                         \
+    color: #d4d4d4;                                 \
+    }                                               \
+    @media (prefers-color-scheme: dark) {           \
+    #log_textarea pre {                             \
+    background: #1e1e1e;                            \
+    border: 1px solid #444;                         \
+    color: #d4d4d4;                                 \
+    }                                               \
     }";
 
     var log_textarea = E(
@@ -42,6 +54,7 @@ return view.extend({
       ),
     );
     var lastLogContent = null;
+    var lastTotal = 0;
     var autoRefresh = true;
     var pauseButton;
 
@@ -52,32 +65,86 @@ return view.extend({
       );
     }
 
+    function fetchTail(start) {
+      if (start == null)
+        start = lastTotal > 0 ? lastTotal + 1 : 0;
+
+      return fs.exec_direct(
+        "/usr/share/oplist/tail-log",
+        [String(start)],
+        "text",
+      );
+    }
+
+    function renderLog(text) {
+      var oldPre = log_textarea.querySelector("pre");
+      var wasNearBottom = true;
+      if (oldPre)
+        wasNearBottom =
+          oldPre.scrollHeight - oldPre.scrollTop - oldPre.clientHeight < 50;
+
+      var log = E("pre", { wrap: "pre" }, [text]);
+      dom.content(log_textarea, log);
+      if (wasNearBottom) log.scrollTop = log.scrollHeight;
+    }
+
+    function handleTail(res, start) {
+      var nl = res.indexOf("\n");
+      var total = parseInt(res.substring(0, nl), 10);
+      var content = nl >= 0 ? res.substring(nl + 1).replace(/\n$/, "") : "";
+
+      if (isNaN(total)) total = 0;
+
+      if (total < lastTotal) {
+        // The log was rotated or truncated, refetch everything from scratch.
+        lastTotal = 0;
+        lastLogContent = null;
+        return fetchTail(0).then(function (res2) {
+          return handleTail(res2, 0);
+        });
+      }
+
+      var newLines = content === "" ? 0 : content.split("\n").length;
+      if (start > 0) {
+        if (newLines === 0 && total === lastTotal) return;
+        lastTotal += newLines;
+      } else {
+        lastTotal = total;
+        lastLogContent = null;
+      }
+
+      var combined = (lastLogContent ? lastLogContent + "\n" : "") + content;
+      var lines = combined.split("\n");
+      if (lines.length > 1000) lines = lines.slice(lines.length - 1000);
+
+      lastLogContent = lines.join("\n");
+      renderLog(lastLogContent || _("Log is empty."));
+    }
+
+    function handleLogError(err) {
+      var error = err.toString();
+      var content =
+        error.includes("NotFoundError") ||
+        error.includes("No such file") ||
+        error.includes("not found")
+          ? _("Log file does not exist.")
+          : _("Unknown error: %s").format(err);
+      if (content === lastLogContent) return;
+
+      lastLogContent = content;
+      lastTotal = 0;
+      dom.content(log_textarea, E("pre", { wrap: "pre" }, [content]));
+    }
+
     function refreshLog(force) {
       if (!force && !autoRefresh) return Promise.resolve();
 
-      return fs
-        .exec_direct("/usr/share/oplist/tail-log", [], "text")
+      var start = lastTotal > 0 ? lastTotal + 1 : 0;
+      return fetchTail(start)
         .then(function (res) {
-          var content = res.trim();
-          if (content === lastLogContent) return;
-
-          lastLogContent = content;
-          var log = E("pre", { wrap: "pre" }, [content || _("Log is empty.")]);
-          dom.content(log_textarea, log);
-          log.scrollTop = log.scrollHeight;
+          return handleTail(res, start);
         })
-        .catch(function (err) {
-          var error = err.toString();
-          var content =
-            error.includes("NotFoundError") || error.includes("No such file")
-              ? _("Log file does not exist.")
-              : _("Unknown error: %s").format(err);
-          if (content === lastLogContent) return;
-
-          lastLogContent = content;
-          var log = E("pre", { wrap: "pre" }, [content]);
-          dom.content(log_textarea, log);
-        });
+        .catch(handleLogError);
     }
 
     function handleClearLog(ev) {
@@ -109,6 +176,7 @@ return view.extend({
                   .then(function () {
                     ui.hideModal();
                     lastLogContent = "";
+                    lastTotal = 0;
                     dom.content(
                       log_textarea,
                       E("pre", { wrap: "pre" }, [_("Log is empty.")]),

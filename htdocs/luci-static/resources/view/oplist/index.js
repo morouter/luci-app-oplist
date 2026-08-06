@@ -22,6 +22,13 @@ function getServiceStatus() {
   });
 }
 
+function updateStatus() {
+  return L.resolveDefault(getServiceStatus()).then(function (res) {
+    var view = document.getElementById("service_status");
+    if (view) view.innerHTML = renderStatus(res);
+  });
+}
+
 function renderStatus(isRunning) {
   var spanTemp = '<span style="color:%s"><strong>%s %s</strong></span>';
   var renderHTML;
@@ -50,12 +57,7 @@ return view.extend({
     s = m.section(form.TypedSection);
     s.anonymous = true;
     s.render = function () {
-      poll.add(function () {
-        return L.resolveDefault(getServiceStatus()).then(function (res) {
-          var view = document.getElementById("service_status");
-          if (view) view.innerHTML = renderStatus(res);
-        });
-      });
+      poll.add(updateStatus);
 
       return E("div", { class: "cbi-section", id: "status_bar" }, [
         E("p", { id: "service_status" }, _("Collecting data...")),

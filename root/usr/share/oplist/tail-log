@@ -1,3 +1,31 @@
 #!/bin/sh
 
-exec /usr/bin/tail -n 1000 /etc/openlist/log/log.log
+LOG=/etc/openlist/log/log.log
+START=${1:-}
+
+if [ ! -f "$LOG" ]; then
+    echo "Log file not found: $LOG" >&2
+    exit 1
+fi
+
+case "$START" in
+    '')
+        # Plain invocation: behave like a plain `tail -n 1000`.
+        exec tail -n 1000 "$LOG"
+        ;;
+    *[!0-9]*)
+        echo "Invalid line number: $START" >&2
+        exit 1
+        ;;
+esac
+
+# awk counts the final unterminated line as well, keeping the reported
+# total in sync with `tail -n +N` line numbering.
+TOTAL=$(awk 'END { print NR }' "$LOG")
+
+echo "$TOTAL"
+if [ "$START" -le 0 ]; then
+    tail -n 1000 "$LOG"
+else
+    tail -n +"$START" "$LOG"
+fi

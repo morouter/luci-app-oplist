@@ -15,7 +15,7 @@ LuCI support for OpenList
 
 - It only supports the x86_64 and aarch64_generic platforms.
 
-If you need to compile for another platform, change **x86_64** on line `9` of `./Makefile` to your target platform.
+If you need to compile for another platform, change `x86_64` on line `LUCI_PKGARCH` of `./Makefile` to your target platform.
 
 ## 📚 Help
 

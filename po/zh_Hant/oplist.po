@@ -144,6 +144,9 @@ msgstr "收集數據中..."
 msgid "Log is empty."
 msgstr "日誌是空的"
 
+msgid "Loading..."
+msgstr "載入中..."
+
 msgid "Log file does not exist."
 msgstr "日誌文件不存在"
 

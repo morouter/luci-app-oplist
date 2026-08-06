@@ -1,4 +1,4 @@
-name: I only smoke when i drink
+name: To get your heartbreak
 
 on:
   schedule:
@@ -14,7 +14,7 @@ jobs:
     name: Build for ${{ matrix.openlist_nickname }}
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         include:
           - tag: "GOAMD64=v4"
@@ -99,7 +99,7 @@ jobs:
         uses: softprops/action-gh-release@master
         with:
           tag_name: openlist
-          files: ${{ github.workspace }}/openlist-${{ matrix.openlist_nickname }}
+          files: openlist-${{ matrix.openlist_nickname }}
           body: |
             # ⚙ OpenList
             High performance build binary kernel
@@ -136,7 +136,7 @@ jobs:
         with:
           path: ${{ env.project_name }}
 
-      - name: Get Version
+      - name: Get version
         id: get_version
         shell: bash
         run: |
@@ -168,7 +168,7 @@ jobs:
           cd ../../etc/openlist
           rm DONOTREMOVE
 
-      - name: Build for OpenWrt
+      - name: Build!
         shell: bash
         run: |
           cd ${{ steps.sdk.outputs.sdk_dir }}
@@ -185,7 +185,7 @@ jobs:
           tag_name: V${{ steps.get_version.outputs.version }}
           files: |
             ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-*.apk
-            ${{ github.workspace }}/luci-app-oplist-*.apk
+            luci-app-oplist-*.apk
           body: |
             # 📝 Release Note
             - Fixes and improvements
