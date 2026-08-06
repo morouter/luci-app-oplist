@@ -44,7 +44,7 @@ jobs:
       - name: Clone OpenList Front-End
         shell: bash
         run: |
-          git clone --depth 1 https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
+          git clone https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
 
       - name: Set up Node.js
         uses: actions/setup-node@main
