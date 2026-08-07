@@ -1,4 +1,4 @@
-# luci-app-oplist
+# LuCI-APP-OpenList
 
 LuCI support for OpenList
 
@@ -9,8 +9,8 @@ LuCI support for OpenList
 
 ## ⬇️ Downloads
 
-[GitHub Release](https://github.com/morouter/luci-app-oplist/releases)
-[High performance rebuilt Openlist](https://github.com/morouter/luci-app-oplist/releases/tag/openlist)
+[GitHub Release](https://github.com/morouter/luci-app-openlist/releases)
+[High performance rebuilt Openlist](https://github.com/morouter/luci-app-openlist/releases/tag/openlist)
 
 ## ⚠️ Warning
 
@@ -52,7 +52,7 @@ openlist --data /etc/openlist [username] set [password]
 ```bash
 cd ⚠️sdk-root/package/luci-app-oplist/root/usr/bin/
 rm DONOTREMOVE
-wget -O openlist https://github.com/morouter/luci-app-oplist/releases/download/openlist/openlist-linux-⚠️ARCH-⚠️LibC
+wget -O openlist https://github.com/morouter/luci-app-openlist/releases/download/openlist/openlist-linux-⚠️ARCH-⚠️LibC
 # Or try Mirror by MoAEIOU https://l.867678.xyz/openlist-⚠️ARCH-⚠️LibC
 chmod +x ./openlist
 rm -f DONOTREMOVE
