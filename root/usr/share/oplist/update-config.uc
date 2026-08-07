@@ -76,13 +76,19 @@ if (config.scheme.force_https) {
 	config.scheme.https_port = parse_uint(get_option('https_port', '443'), 'scheme.https_port');
 
 	let cert_file = get_option('tls_cert', '');
+	let key_file = get_option('tls_key', '');
+
+	// Catch the common half-configured state (only one of the two paths
+	// filled in) early, with a clear message, instead of letting OpenList
+	// fail with an obscure startup error. Both empty is allowed so that
+	// manually provisioned cert_file/key_file entries in config.json are
+	// preserved.
+	if (length(cert_file) != length(key_file))
+		die('Both TLS certificate and private key must be configured when TLS is enabled\n');
+
 	if (length(cert_file)) {
 		require_readable_file(cert_file, 'TLS certificate');
 		config.scheme.cert_file = cert_file;
-	}
-
-	let key_file = get_option('tls_key', '');
-	if (length(key_file)) {
 		require_readable_file(key_file, 'TLS private key');
 		config.scheme.key_file = key_file;
 	}

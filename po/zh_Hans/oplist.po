@@ -165,9 +165,6 @@ msgstr "删除日志"
 msgid "Failed to clear log: %s"
 msgstr "删除日志失败：%s"
 
-msgid "Refresh every 5 seconds."
-msgstr "每5秒刷新一次"
-
 msgid "Pause auto-refresh"
 msgstr "暂停刷新"
 

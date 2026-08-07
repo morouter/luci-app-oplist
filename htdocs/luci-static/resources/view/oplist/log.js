@@ -56,6 +56,7 @@ return view.extend({
     var lastLogContent = null;
     var lastTotal = 0;
     var autoRefresh = true;
+    var refreshing = false;
     var pauseButton;
 
     function setPauseButtonLabel() {
@@ -137,14 +138,21 @@ return view.extend({
     }
 
     function refreshLog(force) {
-      if (!force && !autoRefresh) return Promise.resolve();
+      // Guard against overlapping polls: a slow fetch (large log, slow
+      // connection) must not run concurrently with the next one, otherwise
+      // the incremental line counter would be applied twice.
+      if (refreshing || (!force && !autoRefresh)) return Promise.resolve();
 
+      refreshing = true;
       var start = lastTotal > 0 ? lastTotal + 1 : 0;
       return fetchTail(start)
         .then(function (res) {
           return handleTail(res, start);
         })
-        .catch(handleLogError);
+        .catch(handleLogError)
+        .finally(function () {
+          refreshing = false;
+        });
     }
 
     function handleClearLog(ev) {

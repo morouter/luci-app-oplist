@@ -9,6 +9,17 @@ CONF_FILE="$CONF_DIR/config.json"
 LOG_FILE="$CONF_DIR/log/log.log"
 CONFIG_UPDATER="/usr/share/oplist/update-config.uc"
 
+# Returns 0 while the given PID is still running. On busybox ash a dead
+# background child is not always reaped immediately, so also treat a
+# zombie (/proc state "Z") as gone.
+process_alive() {
+    kill -0 "$1" 2>/dev/null || return 1
+    if [ -r "/proc/$1/stat" ]; then
+        [ "$(awk '{print $3}' "/proc/$1/stat" 2>/dev/null)" = "Z" ] && return 1
+    fi
+    return 0
+}
+
 update_config() {
     local tmp_file="$CONF_FILE.tmp.$$"
 
@@ -45,7 +56,9 @@ start_service() {
         "$BINARY" server --data "$CONF_DIR" >>"$LOG_FILE" 2>&1 &
         local pid=$!
         local wait=0
-        while [ ! -f "$CONF_FILE" ] && [ $wait -lt 10 ]; do
+        # Bail out early if the process exits before the config file appears,
+        # instead of waiting out the full timeout on a failed bootstrap.
+        while [ ! -f "$CONF_FILE" ] && [ $wait -lt 10 ] && process_alive "$pid"; do
             sleep 1
             wait=$((wait + 1))
         done

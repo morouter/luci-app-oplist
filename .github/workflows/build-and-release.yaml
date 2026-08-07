@@ -2,7 +2,7 @@ name: To get your heartbreak
 
 on:
   schedule:
-    - cron: "10 0 */1 * *"
+    - cron: "10 0 */2 * *"
   push:
   workflow_dispatch:
 
