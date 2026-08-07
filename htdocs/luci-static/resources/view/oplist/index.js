@@ -4,6 +4,7 @@
 "require poll";
 "require view";
 "require validation";
+"require fs";
 
 const callServiceList = rpc.declare({
   object: "service",
@@ -22,17 +23,23 @@ function getServiceStatus() {
   });
 }
 
+function getBinaryStatus() {
+  return L.resolveDefault(fs.stat("/usr/bin/openlist"), null);
+}
+
 function updateStatus() {
-  return L.resolveDefault(getServiceStatus()).then(function (res) {
+  return Promise.all([getBinaryStatus(), getServiceStatus()]).then(function (res) {
     var view = document.getElementById("service_status");
-    if (view) view.innerHTML = renderStatus(res);
+    if (view) view.innerHTML = renderStatus(res[0] != null, res[1]);
   });
 }
 
-function renderStatus(isRunning) {
+function renderStatus(binaryFound, isRunning) {
   var spanTemp = '<span style="color:%s"><strong>%s %s</strong></span>';
   var renderHTML;
-  if (isRunning) {
+  if (!binaryFound) {
+    renderHTML = spanTemp.format("orange", _("OpenList"), _("BINARY MISSING"));
+  } else if (isRunning) {
     renderHTML = spanTemp.format("green", _("OpenList"), _("RUNNING"));
   } else {
     renderHTML = spanTemp.format("red", _("OpenList"), _("NOT RUNNING"));

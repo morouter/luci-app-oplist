@@ -8,6 +8,9 @@
         ],
         "/usr/share/oplist/tail-log": [
           "exec"
+        ],
+        "/usr/bin/openlist": [
+          "read"
         ]
       },
       "uci": [

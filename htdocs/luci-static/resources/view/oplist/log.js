@@ -40,19 +40,16 @@ return view.extend({
     }                                               \
     }";
 
-    var log_textarea = E(
-      "div",
-      { id: "log_textarea" },
-      E(
-        "img",
-        {
-          src: L.resource("icons/loading.svg"),
-          alt: _("Loading..."),
-          style: "vertical-align:middle",
-        },
-        _("Collecting data..."),
-      ),
-    );
+    // Text cannot be rendered inside an <img> element, so keep the spinner
+    // and the label as siblings.
+    var log_textarea = E("div", { id: "log_textarea" }, [
+      E("img", {
+        src: L.resource("icons/loading.svg"),
+        alt: _("Loading..."),
+        style: "vertical-align:middle",
+      }),
+      " " + _("Collecting data..."),
+    ]);
     var lastLogContent = null;
     var lastTotal = 0;
     var autoRefresh = true;

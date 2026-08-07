@@ -24,6 +24,9 @@ msgstr "运行中"
 msgid "NOT RUNNING"
 msgstr "未运行"
 
+msgid "BINARY MISSING"
+msgstr "程序未安装"
+
 msgid "LuCI support for OpenList"
 msgstr "OpenList的LuCI支持"
 

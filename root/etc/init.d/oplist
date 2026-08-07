@@ -22,12 +22,16 @@ process_alive() {
 
 update_config() {
     local tmp_file="$CONF_FILE.tmp.$$"
+    local tmp_err="$CONF_FILE.tmp.$$.err"
 
-    if ! ucode "$CONFIG_UPDATER" "$CONF_FILE" >"$tmp_file"; then
-        logger -t oplist "failed to update $CONF_FILE"
-        rm -f "$tmp_file"
+    # Keep stderr (ucode warn()/die() messages) in a separate file: mixing it
+    # into stdout would corrupt the JSON on successful runs with warnings.
+    if ! ucode "$CONFIG_UPDATER" "$CONF_FILE" >"$tmp_file" 2>"$tmp_err"; then
+        logger -t oplist "failed to update $CONF_FILE: $(cat "$tmp_err")"
+        rm -f "$tmp_file" "$tmp_err"
         return 1
     fi
+    rm -f "$tmp_err"
 
     chmod 600 "$tmp_file" || {
         rm -f "$tmp_file"
@@ -43,6 +47,12 @@ start_service() {
     [ "$enabled" -eq 0 ] && return
 
     mkdir -p "$CONF_DIR" "$CONF_DIR/log"
+
+    # The bootstrap run writes the one-time admin password to the log, so keep
+    # it unreadable by other local users. OpenList appends without changing
+    # the mode, so this persists across restarts.
+    touch "$LOG_FILE" 2>/dev/null
+    chmod 600 "$LOG_FILE" 2>/dev/null
 
     if [ ! -x "$BINARY" ]; then
         logger -t oplist "openlist binary not found: $BINARY"
