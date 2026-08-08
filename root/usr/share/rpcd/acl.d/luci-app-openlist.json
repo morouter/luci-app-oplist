@@ -1,12 +1,12 @@
 {
-  "luci-app-oplist": {
-    "description": "ACL for luci-app-oplist",
+  "luci-app-openlist": {
+    "description": "ACL for luci-app-openlist",
     "read": {
       "file": {
         "/etc/openlist/log/log.log": [
           "read"
         ],
-        "/usr/share/oplist/tail-log": [
+        "/usr/share/openlist/tail-log": [
           "exec"
         ],
         "/usr/bin/openlist": [
@@ -14,7 +14,7 @@
         ]
       },
       "uci": [
-        "oplist"
+        "openlist"
       ],
       "ubus": {
         "service": [
@@ -32,7 +32,7 @@
         ]
       },
       "uci": [
-        "oplist"
+        "openlist"
       ],
       "ubus": {
         "uci": [

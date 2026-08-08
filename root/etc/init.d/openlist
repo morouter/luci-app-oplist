@@ -7,7 +7,7 @@ BINARY="/usr/bin/openlist"
 CONF_DIR="/etc/openlist"
 CONF_FILE="$CONF_DIR/config.json"
 LOG_FILE="$CONF_DIR/log/log.log"
-CONFIG_UPDATER="/usr/share/oplist/update-config.uc"
+CONFIG_UPDATER="/usr/share/openlist/update-config.uc"
 
 # Returns 0 while the given PID is still running. On busybox ash a dead
 # background child is not always reaped immediately, so also treat a
@@ -27,7 +27,7 @@ update_config() {
     # Keep stderr (ucode warn()/die() messages) in a separate file: mixing it
     # into stdout would corrupt the JSON on successful runs with warnings.
     if ! ucode "$CONFIG_UPDATER" "$CONF_FILE" >"$tmp_file" 2>"$tmp_err"; then
-        logger -t oplist "failed to update $CONF_FILE: $(cat "$tmp_err")"
+        logger -t openlist "failed to update $CONF_FILE: $(cat "$tmp_err")"
         rm -f "$tmp_file" "$tmp_err"
         return 1
     fi
@@ -41,7 +41,7 @@ update_config() {
 }
 
 start_service() {
-    config_load oplist
+    config_load openlist
     local enabled
     config_get_bool enabled main enabled 0
     [ "$enabled" -eq 0 ] && return
@@ -55,7 +55,7 @@ start_service() {
     chmod 600 "$LOG_FILE" 2>/dev/null
 
     if [ ! -x "$BINARY" ]; then
-        logger -t oplist "openlist binary not found: $BINARY"
+        logger -t openlist "openlist binary not found: $BINARY"
         return 1
     fi
 
@@ -83,7 +83,7 @@ start_service() {
         wait "$pid" 2>/dev/null
 
         if [ ! -f "$CONF_FILE" ]; then
-            logger -t oplist "bootstrap failed: $CONF_FILE was not created"
+            logger -t openlist "bootstrap failed: $CONF_FILE was not created"
             return 1
         fi
     fi
@@ -101,7 +101,7 @@ start_service() {
 }
 
 service_triggers() {
-    procd_add_reload_trigger "oplist"
+    procd_add_reload_trigger "openlist"
 }
 
 reload_service() {

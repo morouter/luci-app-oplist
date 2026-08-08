@@ -1,4 +1,4 @@
-config oplist 'main'
+config openlist 'main'
 	option enabled '0'
 	option listen_addr '0.0.0.0'
 	option port '5244'

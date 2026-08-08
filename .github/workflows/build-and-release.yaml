@@ -119,9 +119,9 @@ jobs:
     needs: OpenList
     runs-on: ubuntu-latest
     env:
-      project_name: "luci-app-oplist"
+      project_name: "luci-app-openlist"
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         include:
           - patch_arch: "x86_64"
@@ -163,7 +163,7 @@ jobs:
           fi
           cd root/usr/bin/
           rm -f DONOTREMOVE
-          wget -O openlist https://github.com/morouter/luci-app-oplist/releases/download/openlist/openlist-${{ matrix.openlist_nickname }}
+          wget -O openlist https://github.com/morouter/luci-app-openlist/releases/download/openlist/openlist-${{ matrix.openlist_nickname }}
           chmod +x ./openlist
           cd ../../etc/openlist
           rm DONOTREMOVE
@@ -177,15 +177,15 @@ jobs:
       - name: Rename compilation files
         shell: bash
         run: |
-          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-app*.apk ${{ github.workspace }}/luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
+          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-app*.apk ${{ github.workspace }}/luci-app-openlist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
 
       - name: Release
         uses: softprops/action-gh-release@master
         with:
           tag_name: V${{ steps.get_version.outputs.version }}
           files: |
-            ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-*.apk
-            luci-app-oplist-*.apk
+            ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-openlist-*.apk
+            luci-app-openlist-*.apk
           body: |
             # 📝 Release Note
             - Fixes and improvements

@@ -14,10 +14,10 @@ const callServiceList = rpc.declare({
 });
 
 function getServiceStatus() {
-  return L.resolveDefault(callServiceList("oplist"), {}).then(function (res) {
+  return L.resolveDefault(callServiceList("openlist"), {}).then(function (res) {
     var isRunning = false;
     try {
-      isRunning = res["oplist"]["instances"]["instance1"]["running"];
+      isRunning = res["openlist"]["instances"]["instance1"]["running"];
     } catch (e) {}
     return isRunning;
   });
@@ -52,7 +52,7 @@ return view.extend({
     let m, s, o;
 
     m = new form.Map(
-      "oplist",
+      "openlist",
       _("OpenList"),
       _("LuCI support for OpenList") +
         "<br>" +
@@ -71,7 +71,7 @@ return view.extend({
       ]);
     };
 
-    s = m.section(form.NamedSection, "main", "oplist");
+    s = m.section(form.NamedSection, "main", "openlist");
 
     o = s.option(form.Flag, "enabled", _("Enable Service"));
     o.rmempty = false;
