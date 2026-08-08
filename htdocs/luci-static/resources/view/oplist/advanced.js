@@ -6,8 +6,8 @@ return view.extend({
   render: function () {
     var m, s, o;
 
-    m = new form.Map("openlist", _("OpenList"));
-    s = m.section(form.NamedSection, "main", "openlist");
+    m = new form.Map("oplist", _("OpenList"));
+    s = m.section(form.NamedSection, "main", "oplist");
 
     o = s.option(form.Flag, "s3_enable", _("Enable S3 Server"));
     o.default = "0";

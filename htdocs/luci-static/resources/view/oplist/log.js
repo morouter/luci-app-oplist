@@ -68,7 +68,7 @@ return view.extend({
         start = lastTotal > 0 ? lastTotal + 1 : 0;
 
       return fs.exec_direct(
-        "/usr/share/openlist/tail-log",
+        "/usr/share/oplist/tail-log",
         [String(start)],
         "text",
       );

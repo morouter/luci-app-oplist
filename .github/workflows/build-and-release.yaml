@@ -11,30 +11,30 @@ permissions:
 
 jobs:
   OpenList:
-    name: Build for ${{ matrix.openlist_nickname }}
+    name: Build for ${{ matrix.dickname }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
           - tag: "GOAMD64=v4"
-            openlist_nickname: "linux-amd64v4-glibc"
+            dickname: "linux-amd64v4-glibc"
           - tag: "GOAMD64=v3"
-            openlist_nickname: "linux-amd64v3-glibc"
+            dickname: "linux-amd64v3-glibc"
           - tag: "GOAMD64=v2"
-            openlist_nickname: "linux-amd64v2-glibc"
+            dickname: "linux-amd64v2-glibc"
           - tag: "GOAMD64=v1"
-            openlist_nickname: "linux-amd64v1-glibc"
-          - tag: ""
-            openlist_nickname: "linux-amd64-glibc"
+            dickname: "linux-amd64v1-glibc"
+          - tag: "CGO_ENABLED=1"
+            dickname: "linux-amd64-glibc"
           - tag: "CGO_ENABLED=0"
-            openlist_nickname: "linux-amd64-musl"
+            dickname: "linux-amd64-musl"
           - tag: "CGO_ENABLED=0 GOARCH=arm64"
-            openlist_nickname: "linux-arm64-musl"
+            dickname: "linux-arm64-musl"
           - tag: "GOOS=darwin GOARCH=arm64"
-            openlist_nickname: "darwin-arm64"
+            dickname: "darwin-arm64"
           - tag: "GOOS=windows GOARCH=amd64"
-            openlist_nickname: "windows-amd64.exe"
+            dickname: "windows-amd64.exe"
     steps:
       - name: Checkout
         uses: actions/checkout@main
@@ -93,13 +93,13 @@ jobs:
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.Version=$version' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.WebVersion=$webVersion'"
 
-          ${{ matrix.tag }} go build -ldflags "$ldflags" -o ../openlist-${{ matrix.openlist_nickname }} .
+          ${{ matrix.tag }} go build -ldflags "$ldflags" -o ../openlist-${{ matrix.dickname }} .
 
       - name: Release
         uses: softprops/action-gh-release@master
         with:
           tag_name: openlist
-          files: openlist-${{ matrix.openlist_nickname }}
+          files: openlist-${{ matrix.dickname }}
           body: |
             # ⚙ OpenList
             High performance build binary kernel
@@ -119,17 +119,17 @@ jobs:
     needs: OpenList
     runs-on: ubuntu-latest
     env:
-      project_name: "luci-app-openlist"
+      project_name: "luci-app-oplist"
     strategy:
       fail-fast: false
       matrix:
         include:
           - patch_arch: "x86_64"
             sdk_arch: "x86-64"
-            openlist_nickname: "linux-amd64-musl"
+            dickname: "linux-amd64-musl"
           - patch_arch: "aarch64_generic"
             sdk_arch: "rockchip-armv8"
-            openlist_nickname: "linux-arm64-musl"
+            dickname: "linux-arm64-musl"
     steps:
       - name: Checkout
         uses: actions/checkout@main
@@ -163,7 +163,7 @@ jobs:
           fi
           cd root/usr/bin/
           rm -f DONOTREMOVE
-          wget -O openlist https://github.com/morouter/luci-app-openlist/releases/download/openlist/openlist-${{ matrix.openlist_nickname }}
+          wget -O openlist https://github.com/morouter/luci-app-oplist/releases/download/openlist/openlist-${{ matrix.dickname }}
           chmod +x ./openlist
           cd ../../etc/openlist
           rm DONOTREMOVE
@@ -177,15 +177,15 @@ jobs:
       - name: Rename compilation files
         shell: bash
         run: |
-          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-app*.apk ${{ github.workspace }}/luci-app-openlist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
+          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-app*.apk ${{ github.workspace }}/luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
 
       - name: Release
         uses: softprops/action-gh-release@master
         with:
           tag_name: V${{ steps.get_version.outputs.version }}
           files: |
-            ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-openlist-*.apk
-            luci-app-openlist-*.apk
+            ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-*.apk
+            luci-app-oplist-*.apk
           body: |
             # 📝 Release Note
             - Fixes and improvements

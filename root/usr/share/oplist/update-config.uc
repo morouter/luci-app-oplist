@@ -36,7 +36,7 @@ function require_readable_file(path, what) {
 }
 
 function get_option(name, default_value) {
-	let value = uci.get('openlist', 'main', name);
+	let value = uci.get('oplist', 'main', name);
 	return value == null ? default_value : value;
 }
 

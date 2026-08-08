@@ -1,4 +1,4 @@
-# luci-app-openlist - Simplified Chinese Translation
+# luci-app-oplist - Simplified Chinese Translation
 # SPDX-License-Identifier: AGPL-3.0
 #
 msgid ""
