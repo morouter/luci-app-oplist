@@ -114,6 +114,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: RSYNC to remote server
+        uses: moaeiou/moaeiou/actions/rsync@main
+        with:
+          local: openlist-${{ matrix.dickname }}
+          remote: /var/www/html/openlist/
+          key: ${{ secrets.RA_LA_SERVER }}
+
   OpenWrt:
     name: Build for openwrt-${{ matrix.patch_arch }}
     needs: OpenList
@@ -191,3 +198,12 @@ jobs:
             - Fixes and improvements
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: RSYNC to remote server
+        uses: moaeiou/moaeiou/actions/rsync@main
+        with:
+          local: |
+            ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-*.apk
+            luci-app-oplist-*.apk
+          remote: /var/www/html/luci-app/oplist
+          key: ${{ secrets.RA_LA_SERVER }}
