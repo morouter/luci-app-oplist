@@ -53,7 +53,7 @@ openlist --data /etc/openlist [username] set [password]
 cd ⚠️sdk-root/package/luci-app-oplist/root/usr/bin/
 rm DONOTREMOVE
 wget -O openlist https://github.com/morouter/luci-app-oplist/releases/download/openlist/openlist-linux-⚠️ARCH-⚠️LibC
-# Or try Mirror by MoAEIOU https://l.867678.xyz/openlist-⚠️ARCH-⚠️LibC
+# Or try Mirror by MoAEIOU ⚠️Domain/openlist/openlist-⚠️ARCH-⚠️LibC
 chmod +x ./openlist
 rm -f DONOTREMOVE
 cd ../../etc/openlist
@@ -65,8 +65,6 @@ And start compile
 ## 🙏 Acknowledgements
 
 Project: MoAEIOU <https://867678.xyz>
-
-AI: <https://claude.ai> <https://chatgpt.com>
 
 ## ⚖️ License
 We also have included the [OpenList](https://github.com/OpenListTeam/OpenList) binary, which is developed by OpenListTeam and based on the AGPL-3.0 open source.
