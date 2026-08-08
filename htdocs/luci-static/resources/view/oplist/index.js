@@ -57,7 +57,7 @@ return view.extend({
       _("LuCI support for OpenList") +
         "<br>" +
         _(
-          "The initial admin password is randomly generated. Check the Logs page after enabling the service for the first time.",
+          "Check the Logs page to get the initial admin password after enabling the service for the first time.",
         ),
     );
 

@@ -25,13 +25,13 @@ msgid "NOT RUNNING"
 msgstr "未运行"
 
 msgid "BINARY MISSING"
-msgstr "程序未安装"
+msgstr "未找到OpenList的二进制文件"
 
 msgid "LuCI support for OpenList"
 msgstr "OpenList的LuCI支持"
 
-msgid "The initial admin password is randomly generated. Check the Logs page after enabling the service for the first time."
-msgstr "初始管理员密码会随机生成。首次启用服务后，请前往日志页面查看。"
+msgid " Check the Logs page to get the initial admin password after enabling the service for the first time."
+msgstr "首次启用服务后，初始管理员密码请前往日志页面查看。"
 
 msgid "Enable Service"
 msgstr "启用服务"
@@ -40,7 +40,7 @@ msgid "Listen Address"
 msgstr "监听地址"
 
 msgid "Address on which OpenList listens. Use 0.0.0.0 or :: to listen on all network interfaces."
-msgstr "OpenList 的监听地址。使用 0.0.0.0 或 :: 监听所有网络接口。"
+msgstr "OpenList 的监听地址。使用 0.0.0.0 或 :: 监听所有来源。"
 
 msgid "HTTP Listen Port"
 msgstr "HTTP监听端口"
@@ -168,14 +168,8 @@ msgstr "删除日志"
 msgid "Failed to clear log: %s"
 msgstr "删除日志失败：%s"
 
-msgid "Pause auto-refresh"
-msgstr "暂停刷新"
+msgid "Refresh now"
+msgstr "手动刷新"
 
-msgid "Resume auto-refresh"
-msgstr "继续刷新"
-
-msgid "Refresh"
-msgstr "刷新一下"
-
-msgid "Shows the last 1000 lines and auto-refreshes every 5 seconds."
-msgstr "显示最后 1000 行日志，每 5 秒自动刷新一次。"
+msgid "Auto-refreshes every 5 seconds while viewing the latest logs."
+msgstr "每 5 秒自动刷新一次。"

@@ -23,7 +23,7 @@
       "path": "oplist/index"
     }
   },
-  "admin/services/oplist/config/advanced": {
+  "admin/services/oplist/config/main/advanced": {
     "title": "Advanced",
     "order": 2,
     "action": {
