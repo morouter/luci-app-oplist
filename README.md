@@ -1,11 +1,12 @@
-# LuCI-APP-Op(en)List 
+# LuCI-APP-Op(en)List
 
 LuCI support for OpenList
 
 ## 🚀 Features
 
 - Simple LuCI interface for OpenList
-- With built-in **high performance** OpenList binary kernel
+- With rebuilt-in **high performance** OpenList
+- No any others depends!
 
 ## ⬇️ Downloads
 
@@ -14,9 +15,9 @@ LuCI support for OpenList
 
 ## ⚠️ Warning
 
+- If you change name to `luci-app-openlist`, compile will be creat some unrelated things.
 - It only supports the x86_64 and aarch64_generic platforms.
-
-If you need to compile for another platform, change `x86_64` on line `LUCI_PKGARCH` of `./Makefile` to your target platform.
+- If you need to compile for another platform, change `x86_64` on line `LUCI_PKGARCH` of `./Makefile` to your platform target.
 
 ## 📚 Help
 
@@ -47,7 +48,8 @@ openlist --data /etc/openlist [username] set [password]
 ### 🛠 How to self-build?
 
 - It is assumed that you are already in the SDK root directory.
-  Additional operations on the source code are required before compilation:
+
+Additional operations on the source code are required before compilation:
 
 ```bash
 cd ⚠️sdk-root/package/luci-app-oplist/root/usr/bin/
@@ -55,7 +57,6 @@ rm DONOTREMOVE
 wget -O openlist https://github.com/morouter/luci-app-oplist/releases/download/openlist/openlist-linux-⚠️ARCH-⚠️LibC
 # Or try Mirror by MoAEIOU ⚠️Domain/openlist/openlist-⚠️ARCH-⚠️LibC
 chmod +x ./openlist
-rm -f DONOTREMOVE
 cd ../../etc/openlist
 rm DONOTREMOVE
 ```
@@ -66,9 +67,14 @@ And start compile
 
 Project: MoAEIOU <https://867678.xyz>
 
-## ⚖️ License
-We also have included the [OpenList](https://github.com/OpenListTeam/OpenList) binary, which is developed by OpenListTeam and based on the AGPL-3.0 open source.
+OpenList: [OpenList](https://github.com/OpenListTeam/OpenList)
 
-The log viewer contains code adapted from <https://github.com/Internet1235/luci-app-openlist/blob/main/luci-app-openlist/htdocs/luci-static/resources/view/openlist/log.js>, licensed under Apache-2.0.
+Inspired by <https://github.com/Internet1235/luci-app-openlist>
+
+## ⚖️ License
 
 This application was licensed under the [GNU Affero General Public License Version 3 (AGPL-3.0)](https://www.gnu.org/licenses/agpl-3.0.html).
+
+We also have included the [OpenList](https://github.com/OpenListTeam/OpenList) binary, the OpenListTeam aslo based on the `AGPL-v3.0`.
+
+The log viewer contains code adapted from <https://github.com/Internet1235/luci-app-openlist/blob/main/luci-app-openlist/htdocs/luci-static/resources/view/openlist/log.js>, licensed under Apache-2.0. Here change to `AGPL-v3.0`.
