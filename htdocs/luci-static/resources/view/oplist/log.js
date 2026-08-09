@@ -12,7 +12,7 @@
 return view.extend({
   render: function () {
     var css =
-      "                                             \
+      '                                             \
     #log_textarea {                                 \
     padding: 10px;                                  \
     text-align: left;                               \
@@ -27,7 +27,7 @@ return view.extend({
     background: #f4f4f4;                            \
     border: 1px solid #ccc;                         \
     }                                               \
-    :root[data-darkmode=\"true\"] #log_textarea pre {\
+    :root[data-darkmode="true"] #log_textarea pre {\
     background: #1e1e1e;                            \
     border: 1px solid #444;                         \
     color: #d4d4d4;                                 \
@@ -38,10 +38,9 @@ return view.extend({
     border: 1px solid #444;                         \
     color: #d4d4d4;                                 \
     }                                               \
-    }";
+    }';
 
-    // Text cannot be rendered inside an <img> element, so keep the spinner
-    // and the label as siblings.
+    // Text cannot be rendered inside an <img> element, so keep the spinner and the label as siblings.
     var log_textarea = E("div", { id: "log_textarea" }, [
       E("img", {
         src: L.resource("icons/loading.svg"),
@@ -64,8 +63,7 @@ return view.extend({
     }
 
     function fetchTail(start) {
-      if (start == null)
-        start = lastTotal > 0 ? lastTotal + 1 : 0;
+      if (start == null) start = lastTotal > 0 ? lastTotal + 1 : 0;
 
       return fs.exec_direct(
         "/usr/share/oplist/tail-log",
