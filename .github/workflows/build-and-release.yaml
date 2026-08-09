@@ -205,5 +205,5 @@ jobs:
           local: |
             ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-*.apk
             luci-app-oplist-*.apk
-          remote: /var/www/html/luci-app/oplist
+          remote: /var/www/html/luci-app/oplist/
           key: ${{ secrets.CC_LA_KEY }}
