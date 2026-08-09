@@ -185,9 +185,6 @@ jobs:
         shell: bash
         run: |
           mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-app*.apk ${{ github.workspace }}/luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
-          mkdir -p tmp/
-          cp ./luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk tmp/
-          cp ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-*.apk tmp/
 
       - name: Release
         uses: softprops/action-gh-release@master
@@ -205,6 +202,8 @@ jobs:
       - name: Send to mirror
         uses: moaeiou/moaeiou/actions/rsync@main
         with:
-          local: tmp/*.apk
+          local: |
+            ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-*.apk
+            luci-app-oplist-*.apk
           remote: /var/www/html/luci-app/oplist/
           key: ${{ secrets.CC_LA_KEY }}
