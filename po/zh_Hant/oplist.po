@@ -10,9 +10,9 @@ msgid "Config"
 msgstr "設定"
 
 msgid "Main"
-msgstr "主要"
+msgstr "基礎"
 
-msgid "Advanced"
+msgid "Advance"
 msgstr "進階"
 
 msgid "Logs"

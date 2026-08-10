@@ -23,12 +23,12 @@
       "path": "oplist/index"
     }
   },
-  "admin/services/oplist/config/main/advanced": {
-    "title": "Advanced",
+  "admin/services/oplist/config/advance": {
+    "title": "Advance",
     "order": 2,
     "action": {
       "type": "view",
-      "path": "oplist/advanced"
+      "path": "oplist/advance"
     }
   },
   "admin/services/oplist/log": {
