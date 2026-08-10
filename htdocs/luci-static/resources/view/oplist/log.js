@@ -1,5 +1,5 @@
 // The log shows has included this project:
-// <https://github.com/Internet1235/luci-app-openlist/blob/main/luci-app-openlist/htdocs/luci-static/resources/view/openlist/log.js>
+// https://github.com/Internet1235/luci-app-openlist/blob/main/luci-app-openlist/htdocs/luci-static/resources/view/openlist/log.js
 // Licensed under the Apache-2.0 License , here changed to AGPL-v3.0
 
 "use strict";
@@ -53,6 +53,7 @@ return view.extend({
     var lastTotal = 0;
     var autoRefresh = true;
     var refreshing = false;
+    var refreshInterval = 5;
     var pauseButton;
 
     function setPauseButtonLabel() {
@@ -171,7 +172,7 @@ return view.extend({
           E(
             "button",
             {
-              class: "btn cbi-button-save",
+              class: "btn cbi-button-negative",
               click: function () {
                 btn.disabled = true;
                 return fs
@@ -198,13 +199,13 @@ return view.extend({
                   });
               },
             },
-            _("Clear log"),
+            _("Delete"),
           ),
         ]),
       ]);
     }
 
-    poll.add(L.bind(refreshLog, this, false), 5);
+    poll.add(L.bind(refreshLog, this, false), refreshInterval);
 
     pauseButton = E(
       "button",
@@ -256,9 +257,7 @@ return view.extend({
               E(
                 "small",
                 {},
-                _(
-                  "Shows the last 1000 lines and auto-refreshes every 5 seconds.",
-                ),
+                _("Refresh every %s seconds.").format(refreshInterval),
               ),
             ],
           ),

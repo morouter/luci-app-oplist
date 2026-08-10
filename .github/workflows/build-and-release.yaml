@@ -201,7 +201,7 @@ jobs:
             - Fixes and improvements
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Send to mirror
         uses: moaeiou/moaeiou/actions/rsync@main
         with:

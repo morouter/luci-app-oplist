@@ -18,20 +18,20 @@ msgstr "高级"
 msgid "Logs"
 msgstr "日志"
 
-msgid "RUNNING"
+msgid "IS RUNNING"
 msgstr "运行中"
 
-msgid "NOT RUNNING"
+msgid "IS NOT RUNNING"
 msgstr "未运行"
 
-msgid "BINARY MISSING"
-msgstr "未找到OpenList的二进制文件"
+msgid "BINARY IS MISSING"
+msgstr "未找到二进制文件"
 
 msgid "LuCI support for OpenList"
 msgstr "OpenList的LuCI支持"
 
-msgid " Check the Logs page to get the initial admin password after enabling the service for the first time."
-msgstr "首次启用服务后，初始管理员密码请前往日志页面查看。"
+msgid "Get the initial admin password from the Logs page."
+msgstr "初始管理员密码请前往日志页面查看。"
 
 msgid "Enable Service"
 msgstr "启用服务"
@@ -165,11 +165,20 @@ msgstr "取消"
 msgid "Clear log"
 msgstr "删除日志"
 
+msgid "Delete"
+msgstr "删除"
+
 msgid "Failed to clear log: %s"
 msgstr "删除日志失败：%s"
 
-msgid "Refresh now"
+msgid "Refresh"
 msgstr "手动刷新"
 
-msgid "Auto-refreshes every 5 seconds while viewing the latest logs."
-msgstr "每 5 秒自动刷新一次。"
+msgid "Pause auto-refresh"
+msgstr "暂停自动刷新"
+
+msgid "Resume auto-refresh"
+msgstr "恢复自动刷新"
+
+msgid "Refresh every %s seconds."
+msgstr "每 %s 秒刷新一次。"

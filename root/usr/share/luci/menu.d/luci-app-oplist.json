@@ -10,28 +10,13 @@
     "title": "Config",
     "order": 1,
     "action": {
-      "type": "firstchild"
-    }
-  },
-  "admin/services/oplist/config/main": {
-    "title": "Main",
-    "order": 1,
-    "action": {
       "type": "view",
       "path": "oplist/index"
     }
   },
-  "admin/services/oplist/config/advance": {
-    "title": "Advance",
-    "order": 2,
-    "action": {
-      "type": "view",
-      "path": "oplist/advance"
-    }
-  },
   "admin/services/oplist/log": {
     "title": "Logs",
-    "order": 3,
+    "order": 2,
     "action": {
       "type": "view",
       "path": "oplist/log"

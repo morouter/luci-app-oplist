@@ -37,11 +37,11 @@ function renderStatus(binaryFound, isRunning) {
   var spanTemp = '<span style="color:%s"><strong>%s %s</strong></span>';
   var renderHTML;
   if (!binaryFound) {
-    renderHTML = spanTemp.format("orange", _("OpenList"), _("BINARY MISSING"));
+    renderHTML = spanTemp.format("orange", _("OpenList"), _("BINARY IS MISSING"));
   } else if (isRunning) {
-    renderHTML = spanTemp.format("green", _("OpenList"), _("RUNNING"));
+    renderHTML = spanTemp.format("green", _("OpenList"), _("IS RUNNING"));
   } else {
-    renderHTML = spanTemp.format("red", _("OpenList"), _("NOT RUNNING"));
+    renderHTML = spanTemp.format("red", _("OpenList"), _("IS NOT RUNNING"));
   }
   return renderHTML;
 }
@@ -55,9 +55,7 @@ return view.extend({
       _("OpenList"),
       _("LuCI support for OpenList") +
         "<br>" +
-        _(
-          "Check the Logs page to get the initial admin password after enabling the service for the first time.",
-        ),
+        _("Get the initial admin password from the Logs page."),
     );
 
     s = m.section(form.TypedSection);
@@ -72,10 +70,13 @@ return view.extend({
 
     s = m.section(form.NamedSection, "main", "oplist");
 
-    o = s.option(form.Flag, "enabled", _("Enable Service"));
+    s.tab("main", _("Main"));
+    s.tab("advance", _("Advance"));
+
+    o = s.taboption("main", form.Flag, "enabled", _("Enable Service"));
     o.rmempty = false;
 
-    o = s.option(
+    o = s.taboption("main",
       form.Value,
       "listen_addr",
       _("Listen Address"),
@@ -88,11 +89,11 @@ return view.extend({
     o.placeholder = "0.0.0.0";
     o.rmempty = false;
 
-    o = s.option(form.Value, "port", _("HTTP Listen Port"));
+    o = s.taboption("main", form.Value, "port", _("HTTP Listen Port"));
     o.datatype = "port";
     o.placeholder = "5244";
 
-    o = s.option(
+    o = s.taboption("main",
       form.Value,
       "site_url",
       _("Site URL"),
@@ -102,15 +103,15 @@ return view.extend({
     );
     o.placeholder = "https://openlist.example.com";
 
-    o = s.option(form.Flag, "tls_enabled", _("Enable TLS"));
+    o = s.taboption("main", form.Flag, "tls_enabled", _("Enable TLS"));
     o.rmempty = false;
 
-    o = s.option(form.Value, "https_port", _("HTTPS Listen Port"));
+    o = s.taboption("main", form.Value, "https_port", _("HTTPS Listen Port"));
     o.depends("tls_enabled", "1");
     o.datatype = "port";
     o.placeholder = "443";
 
-    o = s.option(
+    o = s.taboption("main",
       form.Value,
       "tls_cert",
       _("Certificate Path"),
@@ -119,7 +120,7 @@ return view.extend({
     o.depends("tls_enabled", "1");
     o.placeholder = "/root/.acme.sh/your_domain/fullchain.cer";
 
-    o = s.option(
+    o = s.taboption("main",
       form.Value,
       "tls_key",
       _("Private Key Path"),
@@ -128,15 +129,15 @@ return view.extend({
     o.depends("tls_enabled", "1");
     o.placeholder = "/root/.acme.sh/your_domain/your_domain.key";
 
-    o = s.option(form.Flag, "h3_enable", _("Enable HTTP3"));
+    o = s.taboption("main", form.Flag, "h3_enable", _("Enable HTTP3"));
     o.depends("tls_enabled", "1");
 
-    o = s.option(form.Value, "delayed_start", _("Delayed Start (seconds)"));
+    o = s.taboption("main", form.Value, "delayed_start", _("Delayed Start (seconds)"));
     o.datatype = "uinteger";
     o.default = "0";
     o.placeholder = "0";
 
-    o = s.option(
+    o = s.taboption("main",
       form.Value,
       "temp_dir",
       _("Cache Directory"),
@@ -145,7 +146,7 @@ return view.extend({
     o.placeholder = "/etc/openlist/temp";
     o.rmempty = false;
 
-    o = s.option(
+    o = s.taboption("main",
       form.Value,
       "site_login_expire",
       _("Login Expiration (hours)"),
@@ -154,35 +155,15 @@ return view.extend({
     o.default = "48";
     o.placeholder = "48";
 
-    o = s.option(
-      form.Value,
-      "site_max_connections",
-      _("Max Connections"),
-      _("Set to 0 for unlimited."),
-    );
-    o.datatype = "uinteger";
-    o.default = "0";
-    o.placeholder = "0";
-
-    o = s.option(
-      form.Value,
-      "max_concurrency",
-      _("Max Concurrency"),
-      _("Set to 0 for unlimited."),
-    );
-    o.datatype = "uinteger";
-    o.default = "64";
-    o.placeholder = "64";
-
-    o = s.option(form.Flag, "log_enable", _("Enable Logging"));
+    o = s.taboption("main", form.Flag, "log_enable", _("Enable Logging"));
     o.default = "1";
 
-    o = s.option(form.Value, "log_max_size", _("Max log size (MB)"));
+    o = s.taboption("main", form.Value, "log_max_size", _("Max log size (MB)"));
     o.datatype = "uinteger";
     o.depends("log_enable", "1");
     o.placeholder = "5";
 
-    o = s.option(
+    o = s.taboption("main",
       form.Value,
       "log_max_backups",
       _("Max Log Backups"),
@@ -193,7 +174,7 @@ return view.extend({
     o.default = "30";
     o.placeholder = "30";
 
-    o = s.option(
+    o = s.taboption("main",
       form.Value,
       "log_max_age",
       _("Max Log Age (days)"),
@@ -204,7 +185,7 @@ return view.extend({
     o.default = "28";
     o.placeholder = "28";
 
-    o = s.option(
+    o = s.taboption("main",
       form.Flag,
       "log_compress",
       _("Compress Rotated Logs"),
@@ -213,7 +194,7 @@ return view.extend({
     o.depends("log_enable", "1");
     o.default = "0";
 
-    o = s.option(
+    o = s.taboption("main",
       form.Flag,
       "log_filter_enable",
       _("Enable Log Filter"),
@@ -222,6 +203,60 @@ return view.extend({
       ),
     );
     o.depends("log_enable", "1");
+    o.default = "0";
+
+    o = s.taboption("advance",
+      form.Value,
+      "site_max_connections",
+      _("Max Connections"),
+      _("Set to 0 for unlimited."),
+    );
+    o.datatype = "uinteger";
+    o.default = "0";
+    o.placeholder = "0";
+
+    o = s.taboption("advance",
+      form.Value,
+      "max_concurrency",
+      _("Max Concurrency"),
+      _("Set to 0 for unlimited."),
+    );
+    o.datatype = "uinteger";
+    o.default = "64";
+    o.placeholder = "64";
+
+    o = s.taboption("advance", form.Flag, "s3_enable", _("Enable S3 Server"));
+    o.default = "0";
+
+    o = s.taboption("advance", form.Value, "s3_port", _("S3 Listen Port"));
+    o.datatype = "port";
+    o.depends("s3_enable", "1");
+    o.default = "5246";
+    o.placeholder = "5246";
+
+    o = s.taboption("advance", form.Flag, "s3_ssl", _("Enable S3 TLS"));
+    o.depends("s3_enable", "1");
+    o.default = "0";
+
+    o = s.taboption("advance", form.Flag, "ftp_enable", _("Enable FTP Server"));
+    o.default = "0";
+
+    o = s.taboption("advance", form.Value, "ftp_listen", _("FTP Listen Address"));
+    o.depends("ftp_enable", "1");
+    o.default = ":5221";
+    o.placeholder = ":5221";
+    o.rmempty = false;
+
+    o = s.taboption("advance", form.Flag, "sftp_enable", _("Enable SFTP Server"));
+    o.default = "0";
+
+    o = s.taboption("advance", form.Value, "sftp_listen", _("SFTP Listen Address"));
+    o.depends("sftp_enable", "1");
+    o.default = ":5222";
+    o.placeholder = ":5222";
+    o.rmempty = false;
+
+    o = s.taboption("advance", form.Flag, "mcp_enable", _("Enable MCP Server"));
     o.default = "0";
 
     return m.render();
