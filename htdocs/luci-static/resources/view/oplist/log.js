@@ -51,17 +51,8 @@ return view.extend({
     ]);
     var lastLogContent = null;
     var lastTotal = 0;
-    var autoRefresh = true;
     var refreshing = false;
     var refreshInterval = 5;
-    var pauseButton;
-
-    function setPauseButtonLabel() {
-      dom.content(
-        pauseButton,
-        autoRefresh ? _("Pause auto-refresh") : _("Resume auto-refresh"),
-      );
-    }
 
     function fetchTail(start) {
       if (start == null) start = lastTotal > 0 ? lastTotal + 1 : 0;
@@ -133,11 +124,11 @@ return view.extend({
       dom.content(log_textarea, E("pre", { wrap: "pre" }, [content]));
     }
 
-    function refreshLog(force) {
+    function refreshLog() {
       // Guard against overlapping polls: a slow fetch (large log, slow
       // connection) must not run concurrently with the next one, otherwise
       // the incremental line counter would be applied twice.
-      if (refreshing || (!force && !autoRefresh)) return Promise.resolve();
+      if (refreshing) return Promise.resolve();
 
       refreshing = true;
       var start = lastTotal > 0 ? lastTotal + 1 : 0;
@@ -205,30 +196,18 @@ return view.extend({
       ]);
     }
 
-    poll.add(L.bind(refreshLog, this, false), refreshInterval);
-
-    pauseButton = E(
-      "button",
-      {
-        class: "btn cbi-button-action",
-        click: ui.createHandlerFn(this, function () {
-          autoRefresh = !autoRefresh;
-          setPauseButtonLabel();
-          return autoRefresh ? refreshLog(true) : Promise.resolve();
-        }),
-      },
-      _("Pause auto-refresh"),
-    );
+    poll.add(L.bind(refreshLog, this), refreshInterval);
 
     return E([
       E("style", [css]),
       E("div", { class: "cbi-map" }, [
         E("div", { class: "cbi-section" }, [
+          log_textarea,
           E(
             "div",
             {
               style:
-                "display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;",
+                "display: flex; justify-content: space-between; align-items: center; margin-top: 10px;",
             },
             [
               E("div", {}, [
@@ -241,15 +220,11 @@ return view.extend({
                   _("Clear log"),
                 ),
                 " ",
-                pauseButton,
-                " ",
                 E(
                   "button",
                   {
                     class: "btn cbi-button-action",
-                    click: ui.createHandlerFn(this, function () {
-                      return refreshLog(true);
-                    }),
+                    click: ui.createHandlerFn(this, refreshLog),
                   },
                   _("Refresh"),
                 ),
@@ -261,7 +236,6 @@ return view.extend({
               ),
             ],
           ),
-          log_textarea,
         ]),
       ]),
     ]);
