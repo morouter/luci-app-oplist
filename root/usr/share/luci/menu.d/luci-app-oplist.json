@@ -2,8 +2,7 @@
   "admin/services/oplist": {
     "title": "OpenList",
     "action": {
-      "type": "alias",
-      "path": "admin/services/oplist/config"
+      "type": "firstchild"
     },
     "order": 99
   },
@@ -11,8 +10,7 @@
     "title": "Config",
     "order": 1,
     "action": {
-      "type": "alias",
-      "path": "admin/services/oplist/config/main"
+      "type": "firstchild"
     }
   },
   "admin/services/oplist/config/main": {
