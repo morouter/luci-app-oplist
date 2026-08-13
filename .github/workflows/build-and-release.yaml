@@ -102,13 +102,11 @@ jobs:
           files: openlist-${{ matrix.dickname }}
           body: |
             # ⚙ OpenList
-            High performance build binary kernel
+            High performance build
             ## 📏 Filename Rule
             `openlist-os-arch(optimize)-libc(only linux)`
 
             For example: `openlist-amd64v4-glibc`
-            ## Mirrored at
-            <https://867678.xyz/doc/Mirror>
             ## Made by
             MoAEIOU & GitHub Actions
         env:
@@ -184,10 +182,10 @@ jobs:
       - name: Rename compilation files
         shell: bash
         run: |
-          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-app-*.apk luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
-          cp ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-zh-cn-*.apk luci-i18n-oplist-zh-cn.apk
-          cp ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-zh-tw-*.apk luci-i18n-oplist-zh-tw.apk
-          cp luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk luci-app-oplist-${{ matrix.patch_arch }}.apk
+          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-app-oplist-*.apk ./luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
+          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-zh-cn-*.apk ./luci-i18n-oplist-zh-cn.apk
+          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-zh-tw-*.apk ./luci-i18n-oplist-zh-tw.apk
+          ln -s luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk ./luci-app-oplist-${{ matrix.patch_arch }}.apk
 
       - name: Release
         uses: softprops/action-gh-release@master
@@ -205,6 +203,6 @@ jobs:
       - name: Send to mirror
         uses: moaeiou/moaeiou/actions/rsync@main
         with:
-          local: ./luci-i18n-oplist-*.apk ./luci-app-oplist-${{ matrix.patch_arch }}.apk
+          local: ./luci-i18n-oplist-*.apk ./luci-app-oplist-${{ matrix.patch_arch }}.apk 
           remote: /var/www/html/luci-app/oplist/
           key: ${{ secrets.CC_LA_KEY }}
