@@ -69,12 +69,12 @@ Project: MoAEIOU
 
 OpenList: [OpenList](https://github.com/OpenListTeam/OpenList)
 
-Inspired by <https://github.com/Internet1235/luci-app-openlist>
+Source of inspiration: <https://github.com/Internet1235/luci-app-openlist>
 
 ## ⚖️ License
 
 This application was licensed under the [GNU Affero General Public License Version 3 (AGPL-3.0)](https://www.gnu.org/licenses/agpl-3.0.html).
 
-We also have included the [OpenList](https://github.com/OpenListTeam/OpenList) binary, the OpenListTeam aslo based on the `AGPL-v3.0`.
+We also have included the [OpenList](https://github.com/OpenListTeam/OpenList), the `OpenList project` aslo based on the `AGPL-v3.0`.
 
 The log viewer contains code adapted from <https://github.com/Internet1235/luci-app-openlist/blob/main/luci-app-openlist/htdocs/luci-static/resources/view/openlist/log.js>, licensed under Apache-2.0. Here change to `AGPL-v3.0`.

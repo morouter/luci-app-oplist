@@ -37,7 +37,11 @@ function renderStatus(binaryFound, isRunning) {
   var spanTemp = '<span style="color:%s"><strong>%s %s</strong></span>';
   var renderHTML;
   if (!binaryFound) {
-    renderHTML = spanTemp.format("orange", _("OpenList"), _("BINARY IS MISSING"));
+    renderHTML = spanTemp.format(
+      "orange",
+      _("OpenList"),
+      _("BINARY IS MISSING"),
+    );
   } else if (isRunning) {
     renderHTML = spanTemp.format("green", _("OpenList"), _("IS RUNNING"));
   } else {
@@ -76,7 +80,8 @@ return view.extend({
     o = s.taboption("main", form.Flag, "enabled", _("Enable Service"));
     o.rmempty = false;
 
-    o = s.taboption("main",
+    o = s.taboption(
+      "main",
       form.Value,
       "listen_addr",
       _("Listen Address"),
@@ -93,7 +98,8 @@ return view.extend({
     o.datatype = "port";
     o.placeholder = "5244";
 
-    o = s.taboption("main",
+    o = s.taboption(
+      "main",
       form.Value,
       "site_url",
       _("Site URL"),
@@ -111,7 +117,8 @@ return view.extend({
     o.datatype = "port";
     o.placeholder = "443";
 
-    o = s.taboption("main",
+    o = s.taboption(
+      "main",
       form.Value,
       "tls_cert",
       _("Certificate Path"),
@@ -120,7 +127,8 @@ return view.extend({
     o.depends("tls_enabled", "1");
     o.placeholder = "/root/.acme.sh/your_domain/fullchain.cer";
 
-    o = s.taboption("main",
+    o = s.taboption(
+      "main",
       form.Value,
       "tls_key",
       _("Private Key Path"),
@@ -132,12 +140,18 @@ return view.extend({
     o = s.taboption("main", form.Flag, "h3_enable", _("Enable HTTP3"));
     o.depends("tls_enabled", "1");
 
-    o = s.taboption("main", form.Value, "delayed_start", _("Delayed Start (seconds)"));
+    o = s.taboption(
+      "main",
+      form.Value,
+      "delayed_start",
+      _("Delayed Start (seconds)"),
+    );
     o.datatype = "uinteger";
     o.default = "0";
     o.placeholder = "0";
 
-    o = s.taboption("main",
+    o = s.taboption(
+      "main",
       form.Value,
       "temp_dir",
       _("Cache Directory"),
@@ -146,7 +160,8 @@ return view.extend({
     o.placeholder = "/etc/openlist/temp";
     o.rmempty = false;
 
-    o = s.taboption("main",
+    o = s.taboption(
+      "main",
       form.Value,
       "site_login_expire",
       _("Login Expiration (hours)"),
@@ -163,7 +178,8 @@ return view.extend({
     o.depends("log_enable", "1");
     o.placeholder = "5";
 
-    o = s.taboption("main",
+    o = s.taboption(
+      "main",
       form.Value,
       "log_max_backups",
       _("Max Log Backups"),
@@ -174,7 +190,8 @@ return view.extend({
     o.default = "30";
     o.placeholder = "30";
 
-    o = s.taboption("main",
+    o = s.taboption(
+      "main",
       form.Value,
       "log_max_age",
       _("Max Log Age (days)"),
@@ -185,7 +202,8 @@ return view.extend({
     o.default = "28";
     o.placeholder = "28";
 
-    o = s.taboption("main",
+    o = s.taboption(
+      "main",
       form.Flag,
       "log_compress",
       _("Compress Rotated Logs"),
@@ -194,7 +212,8 @@ return view.extend({
     o.depends("log_enable", "1");
     o.default = "0";
 
-    o = s.taboption("main",
+    o = s.taboption(
+      "main",
       form.Flag,
       "log_filter_enable",
       _("Enable Log Filter"),
@@ -205,7 +224,8 @@ return view.extend({
     o.depends("log_enable", "1");
     o.default = "0";
 
-    o = s.taboption("advance",
+    o = s.taboption(
+      "advance",
       form.Value,
       "site_max_connections",
       _("Max Connections"),
@@ -215,7 +235,8 @@ return view.extend({
     o.default = "0";
     o.placeholder = "0";
 
-    o = s.taboption("advance",
+    o = s.taboption(
+      "advance",
       form.Value,
       "max_concurrency",
       _("Max Concurrency"),
@@ -241,16 +262,31 @@ return view.extend({
     o = s.taboption("advance", form.Flag, "ftp_enable", _("Enable FTP Server"));
     o.default = "0";
 
-    o = s.taboption("advance", form.Value, "ftp_listen", _("FTP Listen Address"));
+    o = s.taboption(
+      "advance",
+      form.Value,
+      "ftp_listen",
+      _("FTP Listen Address"),
+    );
     o.depends("ftp_enable", "1");
     o.default = ":5221";
     o.placeholder = ":5221";
     o.rmempty = false;
 
-    o = s.taboption("advance", form.Flag, "sftp_enable", _("Enable SFTP Server"));
+    o = s.taboption(
+      "advance",
+      form.Flag,
+      "sftp_enable",
+      _("Enable SFTP Server"),
+    );
     o.default = "0";
 
-    o = s.taboption("advance", form.Value, "sftp_listen", _("SFTP Listen Address"));
+    o = s.taboption(
+      "advance",
+      form.Value,
+      "sftp_listen",
+      _("SFTP Listen Address"),
+    );
     o.depends("sftp_enable", "1");
     o.default = ":5222";
     o.placeholder = ":5222";

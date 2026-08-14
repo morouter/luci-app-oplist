@@ -203,6 +203,6 @@ jobs:
       - name: Send to mirror
         uses: moaeiou/moaeiou/actions/rsync@main
         with:
-          local: ./luci-i18n-oplist-*.apk ./luci-app-oplist-${{ matrix.patch_arch }}.apk 
+          local: luci-i18n-oplist-*.apk luci-app-oplist-${{ matrix.patch_arch }}.apk 
           remote: /var/www/html/luci-app/oplist/
           key: ${{ secrets.CC_LA_KEY }}
