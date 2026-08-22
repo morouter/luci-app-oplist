@@ -206,3 +206,4 @@ jobs:
           local: apks/
           remote: /var/www/html/luci-app/oplist/
           key: ${{ secrets.CC_LA_KEY }}
+          extra: --delete
