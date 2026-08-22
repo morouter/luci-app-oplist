@@ -40,7 +40,6 @@ return view.extend({
     }                                               \
     }';
 
-    // Text cannot be rendered inside an <img> element, so keep the spinner and the label as siblings.
     var log_textarea = E("div", { id: "log_textarea" }, [
       E("img", {
         src: L.resource("icons/loading.svg"),
@@ -84,7 +83,6 @@ return view.extend({
       if (isNaN(total)) total = 0;
 
       if (total < lastTotal) {
-        // The log was rotated or truncated, refetch everything from scratch.
         lastTotal = 0;
         lastLogContent = null;
         return fetchTail(0).then(function (res2) {
@@ -125,9 +123,6 @@ return view.extend({
     }
 
     function refreshLog() {
-      // Guard against overlapping polls: a slow fetch (large log, slow
-      // connection) must not run concurrently with the next one, otherwise
-      // the incremental line counter would be applied twice.
       if (refreshing) return Promise.resolve();
 
       refreshing = true;

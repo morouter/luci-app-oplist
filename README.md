@@ -45,7 +45,7 @@ openlist --data /etc/openlist [username] set [password]
 - View the log page for more details.
 - Alternatively, open an issue for this project.
 
-### 🛠 How to self-build?
+### 🛠 Build
 
 - It is assumed that you are already in the SDK root directory.
 
@@ -60,16 +60,6 @@ chmod +x ./openlist
 cd ../../etc/openlist
 rm DONOTREMOVE
 ```
-
-And start compile
-
-## 🙏 Acknowledgements
-
-Project: MoAEIOU
-
-OpenList: [OpenList](https://github.com/OpenListTeam/OpenList)
-
-Source of inspiration: <https://github.com/Internet1235/luci-app-openlist>
 
 ## ⚖️ License
 

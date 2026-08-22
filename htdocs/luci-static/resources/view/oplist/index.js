@@ -107,7 +107,7 @@ return view.extend({
         "This option is intended for deployments using a CDN and updates the `site_url` field in the configuration file. Leave it empty if you are unsure what it does.",
       ),
     );
-    o.placeholder = "https://openlist.example.com";
+    o.placeholder = "https://oplist.org";
 
     o = s.taboption("main", form.Flag, "tls_enabled", _("Enable TLS"));
     o.rmempty = false;

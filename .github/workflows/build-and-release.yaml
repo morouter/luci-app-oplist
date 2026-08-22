@@ -2,7 +2,7 @@ name: To get your heartbreak
 
 on:
   schedule:
-    - cron: "10 0 */2 * *"
+    - cron: "30 0 */2 * *"
   push:
   workflow_dispatch:
 
@@ -182,18 +182,18 @@ jobs:
       - name: Rename compilation files
         shell: bash
         run: |
-          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-app-oplist-*.apk ./luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
-          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-zh-cn-*.apk ./luci-i18n-oplist-zh-cn.apk
-          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-zh-tw-*.apk ./luci-i18n-oplist-zh-tw.apk
-          ln -s luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk ./luci-app-oplist-${{ matrix.patch_arch }}.apk
+          mkdir -p apks
+          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-app-oplist-*.apk apks/luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
+          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-zh-cn-*.apk apks/luci-i18n-oplist-zh-cn.apk
+          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-zh-tw-*.apk apks/luci-i18n-oplist-zh-tw.apk
 
       - name: Release
         uses: softprops/action-gh-release@master
         with:
           tag_name: V${{ steps.get_version.outputs.version }}
           files: |
-            luci-i18n-oplist-*.apk
-            luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
+            apks/luci-i18n-oplist-*.apk
+            apks/luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
           body: |
             # 📝 Release Note
             - Fixes and improvements
@@ -203,6 +203,6 @@ jobs:
       - name: Send to mirror
         uses: moaeiou/moaeiou/actions/rsync@main
         with:
-          local: luci-i18n-oplist-*.apk luci-app-oplist-${{ matrix.patch_arch }}.apk 
+          local: apks/
           remote: /var/www/html/luci-app/oplist/
           key: ${{ secrets.CC_LA_KEY }}
