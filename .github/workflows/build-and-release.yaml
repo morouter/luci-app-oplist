@@ -118,7 +118,7 @@ jobs:
         with:
           local: openlist-${{ matrix.dickname }}
           remote: /var/www/html/openlist/
-          key: ${{ secrets.CC_LA_KEY }}
+          key: ${{ secrets.SSH_KEY }}
 
   OpenWrt:
     name: Build for openwrt-${{ matrix.patch_arch }}
