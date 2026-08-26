@@ -56,12 +56,12 @@ jobs:
         uses: pnpm/action-setup@master
         with:
           package_json_file: frontend-src/package.json
+          version: 12.0.0
 
       - name: Build OpenList Front-End
         shell: bash
         run: |
           cd frontend-src
-          npm install -g pnpm
           pnpm install
           pnpm build
 
@@ -75,6 +75,7 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/OpenListTeam/OpenList.git backend-src
           cd backend-src
+
           bash build.sh dev web
 
           builtAt="$(date +'%F %T %z')"
