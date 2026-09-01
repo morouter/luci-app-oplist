@@ -45,7 +45,7 @@ jobs:
       - name: Clone OpenList Front-End
         shell: bash
         run: |
-          git clone https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
+          git clone --depth 1 https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
 
       - name: Set up Node.js
         uses: actions/setup-node@main
@@ -82,7 +82,7 @@ jobs:
           gitAuthor=$(git show -s --format='format:%aN <%ae>' HEAD)
           gitCommit=$(git log --pretty=format:"%h" -1)
           version=$(git describe --long --tags --dirty --always)
-          webVersion=$(curl -s --max-time 5 "https://api.github.com/repos/OpenListTeam/OpenList-Frontend/releases/latest" -L | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | sed 's/^v//')
+          webVersion=$(curl -fsSL --retry 5 --retry-delay 2 --max-time 30 "https://api.github.com/repos/OpenListTeam/OpenList-Frontend/releases/latest" -L | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | sed 's/^v//')
           if [ -z "$webVersion" ]; then
               exit 1
           fi
