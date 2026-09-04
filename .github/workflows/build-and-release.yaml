@@ -196,7 +196,7 @@ jobs:
             apks/luci-i18n-oplist-*.apk
             apks/luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
           body: |
-            # 📝 Release Note
+            # 📝 Release Notes
             - Fixes and improvements
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
