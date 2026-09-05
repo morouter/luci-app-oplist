@@ -2,7 +2,7 @@ name: To get your heartbreak
 
 on:
   schedule:
-    - cron: "15 0 */1 * *"
+    - cron: "0 */12 * * *"
   push:
   workflow_dispatch:
 
@@ -117,7 +117,7 @@ jobs:
         uses: moaeiou/moaeiou/actions/rsync@main
         with:
           local: openlist-${{ matrix.dickname }}
-          remote: /var/www/html/openlist/
+          remote: openlist/
           key: ${{ secrets.SSH_KEY }}
 
   OpenWrt:
@@ -149,9 +149,6 @@ jobs:
           cd ${{ env.project_name }}
           VERSION=$(grep -E "^PKG_VERSION[[:space:]]*:=" Makefile | sed -E 's/.*:=[[:space:]]*//' | tr -d '[:space:]')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Preparing build environment
-        uses: moaeiou/moaeiou/actions/build-env@main
 
       - name: Prepare SDK
         id: sdk
@@ -205,6 +202,6 @@ jobs:
         uses: moaeiou/moaeiou/actions/rsync@main
         with:
           local: apks/
-          remote: /var/www/html/luci-app/oplist/
+          remote: luci-app/oplist/
           key: ${{ secrets.SSH_KEY }}
           extra: --delete
