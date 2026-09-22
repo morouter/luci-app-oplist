@@ -10,8 +10,54 @@ permissions:
   contents: write
 
 jobs:
+  Frontend:
+    name: Build frontend
+    runs-on: ubuntu-latest
+    outputs:
+      web_version: ${{ steps.frontend_meta.outputs.web_version }}
+    steps:
+      - name: Clone OpenList Front-End
+        shell: bash
+        run: |
+          git clone --depth 1 https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
+
+      - name: Get frontend version
+        id: frontend_meta
+        shell: bash
+        run: |
+          web_version=$(grep -m1 '"version"' frontend-src/package.json | sed -E 's/.*"version":[[:space:]]*"([^"]+)".*/\1/')
+          echo "web_version=$web_version" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@main
+        with:
+          node-version: latest
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@master
+        with:
+          package_json_file: frontend-src/package.json
+
+      - name: Build OpenList Front-End
+        shell: bash
+        run: |
+          cd frontend-src
+          pnpm install
+          pnpm build
+          tar -czf ../frontend-dist.tar.gz -C dist .
+
+      - name: Publish frontend bundle
+        uses: softprops/action-gh-release@master
+        with:
+          tag_name: openlist
+          files: frontend-dist.tar.gz
+          overwrite_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   OpenList:
     name: Build for ${{ matrix.dickname }}
+    needs: Frontend
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -42,27 +88,6 @@ jobs:
         with:
           path: useless/
 
-      - name: Clone OpenList Front-End
-        shell: bash
-        run: |
-          git clone --depth 1 https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
-
-      - name: Set up Node.js
-        uses: actions/setup-node@main
-        with:
-          node-version: latest
-
-      - name: Set up pnpm
-        uses: pnpm/action-setup@master
-        with:
-          package_json_file: frontend-src/package.json
-
-      - name: Build OpenList Front-End
-        shell: bash
-        run: |
-          cd frontend-src
-          pnpm install
-          pnpm build
 
       - name: Set up Go
         uses: actions/setup-go@main
@@ -73,16 +98,18 @@ jobs:
         shell: bash
         run: |
           git clone --depth 1 https://github.com/OpenListTeam/OpenList.git backend-src
+          mkdir -p backend-src/public/dist
+          wget -q --show-progress -O frontend-dist.tar.gz https://github.com/morouter/luci-app-oplist/releases/download/openlist/frontend-dist.tar.gz
+          tar -xzf frontend-dist.tar.gz -C backend-src/public/dist
+          test -f backend-src/public/dist/index.html
           cd backend-src
-
-          bash build.sh dev web
 
           builtAt="$(date +'%F %T %z')"
           goVersion=$(go version | sed 's/go version //')
           gitAuthor=$(git show -s --format='format:%aN <%ae>' HEAD)
           gitCommit=$(git log --pretty=format:"%h" -1)
           version=$(git describe --long --tags --dirty --always)
-          webVersion=$(curl -fsSL --retry 5 --retry-delay 2 --max-time 30 "https://api.github.com/repos/OpenListTeam/OpenList-Frontend/releases/latest" -L | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | sed 's/^v//')
+          webVersion="${{ needs.Frontend.outputs.web_version }}"
           if [ -z "$webVersion" ]; then
               exit 1
           fi
