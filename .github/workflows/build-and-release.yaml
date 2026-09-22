@@ -46,12 +46,11 @@ jobs:
           pnpm build
           tar -czf ../frontend-dist.tar.gz -C dist .
 
-      - name: Publish frontend bundle
+      - name: Release
         uses: softprops/action-gh-release@master
         with:
           tag_name: openlist
           files: frontend-dist.tar.gz
-          overwrite_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -87,7 +86,6 @@ jobs:
         uses: actions/checkout@main
         with:
           path: useless/
-
 
       - name: Set up Go
         uses: actions/setup-go@main
@@ -132,7 +130,7 @@ jobs:
             # ⚙ OpenList
             High performance build
             ## 📏 Filename Rule
-            `openlist-os-arch(optimize)-libc(only linux)`
+            **openlist-os-arch(optimize)-libc(only linux)**
 
             For example: `openlist-amd64v4-glibc`
             ## Made by
@@ -208,17 +206,18 @@ jobs:
         shell: bash
         run: |
           mkdir -p apks
-          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-app-oplist-*.apk apks/luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
-          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-zh-cn-*.apk apks/luci-i18n-oplist-zh-cn.apk
-          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-zh-tw-*.apk apks/luci-i18n-oplist-zh-tw.apk
+          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-app-oplist-*.apk ./luci-app-oplist-${{ matrix.patch_arch }}.apk
+          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-zh-cn-*.apk ./luci-i18n-oplist-zh-cn.apk
+          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-zh-tw-*.apk ./luci-i18n-oplist-zh-tw.apk
+          ln -s ./luci-app-oplist-${{ matrix.patch_arch }}.apk ./luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
 
       - name: Release
         uses: softprops/action-gh-release@master
         with:
           tag_name: V${{ steps.get_version.outputs.version }}
           files: |
-            apks/luci-i18n-oplist-*.apk
-            apks/luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
+            luci-i18n-oplist-*.apk
+            luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
           body: |
             # 📝 Release Notes
             - Fixes and improvements
@@ -228,7 +227,6 @@ jobs:
       - name: Send to mirror
         uses: moaeiou/moaeiou/actions/rsync@main
         with:
-          local: apks/
+          local: luci-app-oplist-${{ matrix.patch_arch }}.apk luci-i18n-oplist-*.apk
           remote: luci-app/oplist/
           key: ${{ secrets.SSH_KEY }}
-          extra: --delete
