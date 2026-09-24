@@ -42,7 +42,6 @@ jobs:
         run: |
           chmod +x build.sh
           ./build.sh --dev
-          exit 1
 
       - name: Upload artifact
         uses: actions/upload-artifact@main
@@ -86,19 +85,19 @@ jobs:
       - name: Clone source code
         shell: bash
         run: |
-          git clone --depth 1 https://github.com/OpenListTeam/OpenList.git backend-src
-          mkdir -p backend-src/public/dist
+          rm -rf */
+          git clone --depth 1 https://github.com/OpenListTeam/OpenList.git ./
+          mkdir -p public/dist
 
       - name: Download frontend
         uses: actions/download-artifact@main
         with:
           name: Frontend
-          path: backend-src/public/dist
+          path: public/dist
 
       - name: Build OpenList Backend
         shell: bash
         run: |
-          cd backend-src
           builtAt="$(date +'%F %T %z')"
           goVersion=$(go version | sed 's/go version //')
           gitAuthor=$(git show -s --format='format:%aN <%ae>' HEAD)
@@ -116,7 +115,7 @@ jobs:
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.Version=$version' \
             -X 'github.com/OpenListTeam/OpenList/v4/internal/conf.WebVersion=$webVersion'"
 
-          ${{ matrix.tag }} go build -ldflags "$ldflags" -o ../openlist-${{ matrix.dickname }} .
+          ${{ matrix.tag }} go build -ldflags "$ldflags" -o ./openlist-${{ matrix.dickname }} .
 
       - name: Release
         uses: softprops/action-gh-release@master
