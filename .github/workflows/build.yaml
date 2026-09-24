@@ -26,7 +26,7 @@ jobs:
         id: wv
         shell: bash
         run: |
-          web_version=$(grep -m1 '"version"' frontend-src/package.json | sed -E 's/.*"version":[[:space:]]*"([^"]+)".*/\1/')
+          web_version=$(grep -m1 '"version"' package.json | sed -E 's/.*"version":[[:space:]]*"([^"]+)".*/\1/')
           echo "web_version=$web_version" >> "$GITHUB_OUTPUT"
 
       - name: Set up Node.js
