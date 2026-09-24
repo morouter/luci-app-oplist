@@ -19,6 +19,8 @@ jobs:
       - name: Clone OpenList Front-End
         shell: bash
         run: |
+          ls
+          exit 1
           git clone --depth 1 https://github.com/OpenListTeam/OpenList-Frontend.git frontend-src
 
       - name: Get version
