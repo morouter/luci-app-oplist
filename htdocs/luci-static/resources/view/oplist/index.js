@@ -59,7 +59,7 @@ return view.extend({
       _("OpenList"),
       _("LuCI support for OpenList") +
         "<br>" +
-        _("Get the initial admin password from the Logs page."),
+        _("Set the admin username and password in OpenList on first launch."),
     );
 
     s = m.section(form.TypedSection);

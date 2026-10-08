@@ -23,20 +23,22 @@ LuCI support for OpenList
 
 [Install, Compile and init-SDK Generic Guide](https://867678.xyz/docs/openwrt)
 
+On the first start, open the OpenList web page (port 5244 by default) and set the admin username and password.
+
 ### Forgot your password?
 
 - Use this command to reset it to a random password.
 - OpenList passwords are encrypted and cannot be recovered, so they can only be reset.
-- Replace `[username]` and `[password]` with the actual username and password.
+- Replace `NEW_PASSWORD` with the password you want to set.
 
 ```bash
-openlist --data /etc/openlist [username] random
+openlist --data /etc/openlist admin random
 ```
 
-Or set a password with you.
+Or set a password manually.
 
 ```bash
-openlist --data /etc/openlist [username] set [password]
+openlist --data /etc/openlist admin set NEW_PASSWORD
 ```
 
 ### Cannot start the service?

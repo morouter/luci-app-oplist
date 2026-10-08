@@ -30,8 +30,8 @@ msgstr "未找到二進制程式"
 msgid "LuCI support for OpenList"
 msgstr "OpenList的LuCI支援"
 
-msgid "Get the initial admin password from the Logs page."
-msgstr "初始管理員密碼請前往日誌頁面查看。"
+msgid "Set the admin username and password in OpenList on first launch."
+msgstr "首次啟動時請在 OpenList 網頁設定管理員使用者名稱和密碼。"
 
 msgid "Enable Service"
 msgstr "啟用服務"

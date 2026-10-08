@@ -19,7 +19,6 @@ jobs:
       - name: Clone OpenList Front-End
         shell: bash
         run: |
-          rm -rf */
           git clone --depth 1 https://github.com/OpenListTeam/OpenList-Frontend.git ./
 
       - name: Get version
@@ -85,7 +84,6 @@ jobs:
       - name: Clone source code
         shell: bash
         run: |
-          rm -rf */
           git clone --depth 1 https://github.com/OpenListTeam/OpenList.git ./
           mkdir -p public/dist
 
@@ -117,7 +115,16 @@ jobs:
 
           ${{ matrix.tag }} go build -ldflags "$ldflags" -o ./openlist-${{ matrix.dickname }} .
 
+      - name: Upload OpenWrt binaries
+        if: matrix.dickname == 'linux-amd64-musl' || matrix.dickname == 'linux-arm64-musl'
+        uses: actions/upload-artifact@main
+        with:
+          name: openlist-${{ matrix.dickname }}
+          path: openlist-${{ matrix.dickname }}
+          if-no-files-found: error
+
       - name: Release
+        if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@master
         with:
           tag_name: openlist
@@ -135,6 +142,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Send to mirror
+        if: github.ref == 'refs/heads/main'
         uses: moaeiou/moaeiou/actions/rsync@main
         with:
           local: openlist-${{ matrix.dickname }}
@@ -181,17 +189,22 @@ jobs:
         with:
           sdk_arch: ${{ matrix.sdk_arch }}
 
+      - name: Download OpenList binary
+        uses: actions/download-artifact@main
+        with:
+          name: openlist-${{ matrix.dickname }}
+          path: ${{ env.project_name }}/root/usr/bin/
+
       - name: Preparation before compilation
         shell: bash
         run: |
           mv ${{ env.project_name }} ${{ steps.sdk.outputs.sdk_dir }}/package/
           cd ${{ steps.sdk.outputs.sdk_dir }}/package/${{ env.project_name }}/
-          if [ "${{ matrix.patch_arch }}" != "x86_64" ]; then
-            sed -i 's/x86_64/${{ matrix.patch_arch }}/g' ./Makefile
-          fi
+          sed -i "s/^LUCI_PKGARCH:=.*/LUCI_PKGARCH:=${{ matrix.patch_arch }}/" ./Makefile
+          grep -qx "LUCI_PKGARCH:=${{ matrix.patch_arch }}" ./Makefile
           cd root/usr/bin/
           rm -f DONOTREMOVE
-          wget -O openlist https://github.com/morouter/luci-app-oplist/releases/download/openlist/openlist-${{ matrix.dickname }}
+          mv openlist-${{ matrix.dickname }} openlist
           chmod +x ./openlist
           cd ../../etc/openlist
           rm DONOTREMOVE
@@ -211,6 +224,7 @@ jobs:
           ln -s ./luci-app-oplist-${{ matrix.patch_arch }}.apk ./luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
 
       - name: Release
+        if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@master
         with:
           tag_name: V${{ steps.get_version.outputs.version }}
@@ -224,6 +238,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Send to mirror
+        if: github.ref == 'refs/heads/main'
         uses: moaeiou/moaeiou/actions/rsync@main
         with:
           local: luci-app-oplist-${{ matrix.patch_arch }}.apk luci-i18n-oplist-*.apk

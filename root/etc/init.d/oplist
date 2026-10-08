@@ -9,17 +9,6 @@ CONF_FILE="$CONF_DIR/config.json"
 LOG_FILE="$CONF_DIR/log/log.log"
 CONFIG_UPDATER="/usr/share/oplist/update-config.uc"
 
-# Returns 0 while the given PID is still running. On busybox ash a dead
-# background child is not always reaped immediately, so also treat a
-# zombie (/proc state "Z") as gone.
-process_alive() {
-    kill -0 "$1" 2>/dev/null || return 1
-    if [ -r "/proc/$1/stat" ]; then
-        [ "$(awk '{print $3}' "/proc/$1/stat" 2>/dev/null)" = "Z" ] && return 1
-    fi
-    return 0
-}
-
 update_config() {
     local tmp_file="$CONF_FILE.tmp.$$"
     local tmp_err="$CONF_FILE.tmp.$$.err"
@@ -48,9 +37,7 @@ start_service() {
 
     mkdir -p "$CONF_DIR" "$CONF_DIR/log"
 
-    # The bootstrap run writes the one-time admin password to the log, so keep
-    # it unreadable by other local users. OpenList appends without changing
-    # the mode, so this persists across restarts.
+    # Logs may contain sensitive data.
     touch "$LOG_FILE" 2>/dev/null
     chmod 600 "$LOG_FILE" 2>/dev/null
 
@@ -60,32 +47,7 @@ start_service() {
     fi
 
     if [ ! -f "$CONF_FILE" ]; then
-        # Bootstrap config generation. Keep stdout/stderr in the same log file
-        # the LuCI log page reads, so the one-time admin password and any
-        # startup errors are not lost.
-        "$BINARY" server --data "$CONF_DIR" >>"$LOG_FILE" 2>&1 &
-        local pid=$!
-        local wait=0
-        # Bail out early if the process exits before the config file appears,
-        # instead of waiting out the full timeout on a failed bootstrap.
-        while [ ! -f "$CONF_FILE" ] && [ $wait -lt 10 ] && process_alive "$pid"; do
-            sleep 1
-            wait=$((wait + 1))
-        done
-        kill "$pid" 2>/dev/null
-        local kill_wait=0
-        while kill -0 "$pid" 2>/dev/null && [ $kill_wait -lt 10 ]; do
-            sleep 1
-            kill_wait=$((kill_wait + 1))
-        done
-        # Escalate if it ignored SIGTERM, then wait for reaping either way.
-        kill -0 "$pid" 2>/dev/null && kill -9 "$pid" 2>/dev/null
-        wait "$pid" 2>/dev/null
-
-        if [ ! -f "$CONF_FILE" ]; then
-            logger -t oplist "bootstrap failed: $CONF_FILE was not created"
-            return 1
-        fi
+        (umask 077; printf '{}\n' > "$CONF_FILE") || return 1
     fi
 
     update_config || return 1
