@@ -157,6 +157,10 @@ jobs:
           - patch_arch: "aarch64_generic"
             sdk_arch: "rockchip-armv8"
             dickname: "linux-arm64-musl"
+          - patch_arch: "aarch64_coretex-a53"
+            sdk_arch: "mediatek-filogic"
+            dickname: "linux-arm64-musl"
+
     steps:
       - name: Checkout
         uses: actions/checkout@main
