@@ -68,6 +68,8 @@ jobs:
             dickname: "linux-amd64-glibc"
           - tag: "CGO_ENABLED=0"
             dickname: "linux-amd64-musl"
+          - tag: "CGO_ENABLED=0 GOARCH=arm64 GOARM64=v8.0"
+            dickname: "linux-arm64v8-musl"
           - tag: "CGO_ENABLED=0 GOARCH=arm64"
             dickname: "linux-arm64-musl"
           - tag: "GOOS=darwin GOARCH=arm64"
@@ -115,16 +117,7 @@ jobs:
 
           ${{ matrix.tag }} go build -ldflags "$ldflags" -o ./openlist-${{ matrix.dickname }} .
 
-      - name: Upload OpenWrt binaries
-        if: matrix.dickname == 'linux-amd64-musl' || matrix.dickname == 'linux-arm64-musl'
-        uses: actions/upload-artifact@main
-        with:
-          name: openlist-${{ matrix.dickname }}
-          path: openlist-${{ matrix.dickname }}
-          if-no-files-found: error
-
       - name: Release
-        if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@master
         with:
           tag_name: openlist
@@ -142,7 +135,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Send to mirror
-        if: github.ref == 'refs/heads/main'
         uses: moaeiou/moaeiou/actions/rsync@main
         with:
           local: openlist-${{ matrix.dickname }}
@@ -189,12 +181,6 @@ jobs:
         with:
           sdk_arch: ${{ matrix.sdk_arch }}
 
-      - name: Download OpenList binary
-        uses: actions/download-artifact@main
-        with:
-          name: openlist-${{ matrix.dickname }}
-          path: ${{ env.project_name }}/root/usr/bin/
-
       - name: Preparation before compilation
         shell: bash
         run: |
@@ -204,7 +190,7 @@ jobs:
           grep -qx "LUCI_PKGARCH:=${{ matrix.patch_arch }}" ./Makefile
           cd root/usr/bin/
           rm -f DONOTREMOVE
-          mv openlist-${{ matrix.dickname }} openlist
+          wget -O openlist https://github.com/morouter/luci-app-oplist/releases/download/openlist/openlist-${{ matrix.dickname }}
           chmod +x ./openlist
           cd ../../etc/openlist
           rm DONOTREMOVE
@@ -224,7 +210,6 @@ jobs:
           ln -s ./luci-app-oplist-${{ matrix.patch_arch }}.apk ./luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
 
       - name: Release
-        if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@master
         with:
           tag_name: V${{ steps.get_version.outputs.version }}
@@ -238,7 +223,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Send to mirror
-        if: github.ref == 'refs/heads/main'
         uses: moaeiou/moaeiou/actions/rsync@main
         with:
           local: luci-app-oplist-${{ matrix.patch_arch }}.apk luci-i18n-oplist-*.apk
