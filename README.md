@@ -16,7 +16,7 @@ LuCI support for OpenList
 ## ⚠️ Warning
 
 - If you change name to `luci-app-openlist`, compile will be creat some unrelated things.
-- It only supports the x86_64 and aarch64_generic platforms(Because binary only support them).
+- It only supports the x86_64 and aarch64 platforms(Because binary only support them).
 - If you need to compile for another platform, change `x86_64` on line `LUCI_PKGARCH` of `./Makefile` to your platform target.
 
 ## 📚 Help
