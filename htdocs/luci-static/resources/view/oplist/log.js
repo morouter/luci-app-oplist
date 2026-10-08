@@ -1,7 +1,3 @@
-// The log shows has included this project:
-// https://github.com/Internet1235/luci-app-openlist/blob/main/luci-app-openlist/htdocs/luci-static/resources/view/openlist/log.js
-// Licensed under the Apache-2.0 License , here changed to AGPL-v3.0
-
 "use strict";
 "require fs";
 "require dom";
