@@ -142,24 +142,10 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
 
   OpenWrt:
-    name: Build for openwrt-${{ matrix.patch_arch }}
-    needs: OpenList
+    name: Build for openwrt
     runs-on: ubuntu-latest
     env:
       project_name: "luci-app-oplist"
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - patch_arch: "x86_64"
-            sdk_arch: "x86-64"
-            dickname: "linux-amd64-musl"
-          - patch_arch: "aarch64_generic"
-            sdk_arch: "rockchip-armv8"
-            dickname: "linux-arm64v8-musl"
-          - patch_arch: "aarch64_cortex-a53"
-            sdk_arch: "mediatek-filogic"
-            dickname: "linux-arm64v8-musl"
 
     steps:
       - name: Checkout
@@ -179,21 +165,12 @@ jobs:
         id: sdk
         uses: moaeiou/moaeiou/actions/prepare-sdk@main
         with:
-          sdk_arch: ${{ matrix.sdk_arch }}
+          sdk_arch: "x86-64"
 
       - name: Preparation before compilation
         shell: bash
         run: |
           mv ${{ env.project_name }} ${{ steps.sdk.outputs.sdk_dir }}/package/
-          cd ${{ steps.sdk.outputs.sdk_dir }}/package/${{ env.project_name }}/
-          sed -i "s/^LUCI_PKGARCH:=.*/LUCI_PKGARCH:=${{ matrix.patch_arch }}/" ./Makefile
-          grep -qx "LUCI_PKGARCH:=${{ matrix.patch_arch }}" ./Makefile
-          cd root/usr/bin/
-          rm -f DONOTREMOVE
-          wget -O openlist https://github.com/morouter/luci-app-oplist/releases/download/openlist/openlist-${{ matrix.dickname }}
-          chmod +x ./openlist
-          cd ../../etc/openlist
-          rm DONOTREMOVE
 
       - name: Build!
         shell: bash
@@ -204,10 +181,10 @@ jobs:
       - name: Rename compilation files
         shell: bash
         run: |
-          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-app-oplist-*.apk ./luci-app-oplist-${{ matrix.patch_arch }}.apk
+          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-app-oplist-*.apk ./luci-app-oplist.apk
           mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-zh-cn-*.apk ./luci-i18n-oplist-zh-cn.apk
           mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-zh-tw-*.apk ./luci-i18n-oplist-zh-tw.apk
-          ln -s ./luci-app-oplist-${{ matrix.patch_arch }}.apk ./luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
+          ln -s ./luci-app-oplist.apk ./luci-app-oplist-${{ steps.get_version.outputs.version }}.apk
 
       - name: Release
         uses: softprops/action-gh-release@master
@@ -215,16 +192,17 @@ jobs:
           tag_name: V${{ steps.get_version.outputs.version }}
           files: |
             luci-i18n-oplist-*.apk
-            luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
+            luci-app-oplist-${{ steps.get_version.outputs.version }}.apk
           body: |
             # 📝 Release Notes
             - Fixes and improvements
+            - Requires the `openlist` package (compiled from source by the buildroot)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Send to mirror
         uses: moaeiou/moaeiou/actions/rsync@main
         with:
-          local: luci-app-oplist-${{ matrix.patch_arch }}.apk luci-i18n-oplist-*.apk
+          local: luci-app-oplist.apk luci-i18n-oplist-*.apk
           remote: luci-app/oplist/
           key: ${{ secrets.SSH_KEY }}

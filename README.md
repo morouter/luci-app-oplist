@@ -16,8 +16,9 @@ LuCI support for OpenList
 ## ⚠️ Warning
 
 - If you change name to `luci-app-openlist`, compile will be creat some unrelated things.
-- It only supports the x86_64 and aarch64 platforms(Because binary only support them).
-- If you need to compile for another platform, change `x86_64` on line `LUCI_PKGARCH` of `./Makefile` to your platform target.
+- The `openlist` binary is NOT bundled. It is provided by the `openlist` package
+  (`net/openlist` in the packages feed), which is compiled from source by the
+  buildroot, so this LuCI package itself is architecture-independent.
 
 ## 📚 Help
 
@@ -50,18 +51,9 @@ openlist --data /etc/openlist admin set NEW_PASSWORD
 ### 🛠 Build
 
 - It is assumed that you are already in the SDK root directory.
-
-Additional operations on the source code are required before compilation:
-
-```bash
-cd ⚠️sdk-root/package/luci-app-oplist/root/usr/bin/
-rm DONOTREMOVE
-wget -O openlist https://github.com/morouter/luci-app-oplist/releases/download/openlist/openlist-linux-⚠️ARCH-⚠️LibC
-# Or try Mirror by MoAEIOU ⚠️Domain/openlist/openlist-⚠️ARCH-⚠️LibC
-chmod +x ./openlist
-cd ../../etc/openlist
-rm DONOTREMOVE
-```
+- Select `Network -> openlist` together with `LuCI -> Applications -> luci-app-oplist`
+  (the dependency is resolved automatically once `luci-app-oplist` is selected).
+- The `openlist` binary is built from source; no prebuilt binary download is needed.
 
 ## ⚖️ License
 
