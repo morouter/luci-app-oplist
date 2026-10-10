@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# Generate the configuration locally so apk never installs /etc/config/oplist.
+mkdir -p /etc/config || exit 1
+if [ ! -e /etc/config/oplist ]; then
+	(umask 077; touch /etc/config/oplist) || exit 1
+fi
+
+uci -q get oplist.main >/dev/null ||
+	uci set oplist.main='oplist' || exit 1
+
+# Preserve existing values, including empty strings and disabled options.
+set_default() {
+	uci -q get "oplist.main.$1" >/dev/null && return 0
+	uci set "oplist.main.$1=$2"
+}
+
+set_default enabled '0' || exit 1
+set_default listen_addr '0.0.0.0' || exit 1
+set_default port '5244' || exit 1
+set_default site_url '' || exit 1
+set_default tls_enabled '0' || exit 1
+set_default https_port '443' || exit 1
+set_default tls_cert '' || exit 1
+set_default tls_key '' || exit 1
+set_default h3_enable '0' || exit 1
+set_default delayed_start '0' || exit 1
+set_default temp_dir '/etc/openlist/temp' || exit 1
+set_default site_login_expire '48' || exit 1
+set_default site_max_connections '0' || exit 1
+set_default max_concurrency '64' || exit 1
+set_default log_enable '1' || exit 1
+set_default log_max_size '5' || exit 1
+set_default log_max_backups '30' || exit 1
+set_default log_max_age '28' || exit 1
+set_default log_compress '0' || exit 1
+set_default log_filter_enable '0' || exit 1
+set_default s3_enable '0' || exit 1
+set_default s3_port '5246' || exit 1
+set_default s3_ssl '0' || exit 1
+set_default ftp_enable '0' || exit 1
+set_default ftp_listen ':5221' || exit 1
+set_default sftp_enable '0' || exit 1
+set_default sftp_listen ':5222' || exit 1
+set_default mcp_enable '0' || exit 1
+
+uci commit oplist || exit 1
+exit 0
