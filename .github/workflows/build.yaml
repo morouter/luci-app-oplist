@@ -39,6 +39,7 @@ jobs:
       - name: Build OpenList Frontend
         shell: bash
         run: |
+          pnpm update @crowdin/cli --latest
           chmod +x build.sh
           ./build.sh --dev
 
