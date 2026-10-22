@@ -83,7 +83,7 @@ if (config.scheme.force_https) {
 	// fail with an obscure startup error. Both empty is allowed so that
 	// manually provisioned cert_file/key_file entries in config.json are
 	// preserved.
-	if (length(cert_file) != length(key_file))
+	if ((length(cert_file) == 0) != (length(key_file) == 0))
 		die('Both TLS certificate and private key must be configured when TLS is enabled\n');
 
 	if (length(cert_file)) {
