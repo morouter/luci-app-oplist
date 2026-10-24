@@ -128,7 +128,7 @@ jobs:
             ## 📏 Filename Rule
             **openlist-os-arch(optimize)-libc(only linux)**
 
-            For example: `openlist-amd64v4-glibc`
+            For example: `openlist-linux-amd64v4-glibc`
             ## Made by
             MoAEIOU & GitHub Actions
         env:
