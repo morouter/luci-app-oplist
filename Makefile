@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-oplist
-PKG_VERSION:=1.3.4
+PKG_VERSION:=1.3.5
 PKG_RELEASE:=$(shell date +"%Y%m%d%H%M%S")
 PKG_LICENSE:=AGPL-3.0
 
