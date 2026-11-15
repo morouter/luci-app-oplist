@@ -176,17 +176,31 @@ jobs:
           VERSION=$(grep -E "^PKG_VERSION[[:space:]]*:=" Makefile | sed -E 's/.*:=[[:space:]]*//' | tr -d '[:space:]')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Prepare SDK
+      - name: Download and Initialize SDK
         id: sdk
-        uses: moaeiou/moaeiou/actions/prepare-sdk@main
-        with:
-          sdk_arch: ${{ matrix.sdk_arch }}
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install build-essential gettext xsltproc python3-pyelftools
+
+          sdk_name=openwrt-sdk-${{ inputs.sdk_arch }}_gcc-${{ inputs.gcc_version }}_musl.Linux-x86_64
+          echo "sdk_name=$sdk_name" >> $GITHUB_OUTPUT
+
+          curl --resolve la.867678.xyz:443:23.95.28.150 -LO https://la.867678.xyz/sdk/$sdk_name.tar.zst
+
+          tar -xvf $sdk_name.tar.zst
+          rm $sdk_name.tar.zst
+          cd $sdk_name
+
+          make defconfig
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
 
       - name: Preparation before compilation
         shell: bash
         run: |
-          mv ${{ env.project_name }} ${{ steps.sdk.outputs.sdk_dir }}/package/
-          cd ${{ steps.sdk.outputs.sdk_dir }}/package/${{ env.project_name }}/
+          mv ${{ env.project_name }} ${{ steps.sdk.outputs.sdk_name }}/package/
+          cd ${{ steps.sdk.outputs.sdk_name }}/package/${{ env.project_name }}/
           sed -i "s/^LUCI_PKGARCH:=.*/LUCI_PKGARCH:=${{ matrix.patch_arch }}/" ./Makefile
           grep -qx "LUCI_PKGARCH:=${{ matrix.patch_arch }}" ./Makefile
           cd root/usr/bin/
@@ -199,15 +213,15 @@ jobs:
       - name: Build!
         shell: bash
         run: |
-          cd ${{ steps.sdk.outputs.sdk_dir }}
+          cd ${{ steps.sdk.outputs.sdk_name }}
           make package/${{ env.project_name }}/compile V=s -j$(nproc)
 
       - name: Rename compilation files
         shell: bash
         run: |
-          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-app-oplist-*.apk ./luci-app-oplist-${{ matrix.patch_arch }}.apk
-          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-zh-cn-*.apk ./luci-i18n-oplist-zh-cn.apk
-          mv ${{ steps.sdk.outputs.sdk_dir }}/bin/packages/*/base/luci-i18n-oplist-zh-tw-*.apk ./luci-i18n-oplist-zh-tw.apk
+          mv ${{ steps.sdk.outputs.sdk_name }}/bin/packages/*/base/luci-app-oplist-*.apk ./luci-app-oplist-${{ matrix.patch_arch }}.apk
+          mv ${{ steps.sdk.outputs.sdk_name }}/bin/packages/*/base/luci-i18n-oplist-zh-cn-*.apk ./luci-i18n-oplist-zh-cn.apk
+          mv ${{ steps.sdk.outputs.sdk_name }}/bin/packages/*/base/luci-i18n-oplist-zh-tw-*.apk ./luci-i18n-oplist-zh-tw.apk
           ln -s ./luci-app-oplist-${{ matrix.patch_arch }}.apk ./luci-app-oplist-${{ steps.get_version.outputs.version }}-${{ matrix.patch_arch }}.apk
 
       - name: Release
