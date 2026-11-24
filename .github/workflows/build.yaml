@@ -64,12 +64,10 @@ jobs:
             dickname: "linux-amd64v2-glibc"
           - tag: "GOAMD64=v1 CC=gcc"
             dickname: "linux-amd64v1-glibc"
-          - tag: "CGO_ENABLED=1 CC=gcc"
+          - tag: "CC=gcc"
             dickname: "linux-amd64-glibc"
           - tag: "CGO_ENABLED=0 CC=musl-gcc"
             dickname: "linux-amd64-musl"
-          - tag: "CGO_ENABLED=0 GOARCH=arm64 GOARM64=v8.0"
-            dickname: "linux-arm64v8"
           - tag: "CGO_ENABLED=0 GOARCH=arm64"
             dickname: "linux-arm64"
           - tag: "GOOS=darwin GOARCH=arm64"
@@ -157,10 +155,10 @@ jobs:
             dickname: "linux-amd64-musl"
           - patch_arch: "aarch64_generic"
             sdk_arch: "rockchip-armv8"
-            dickname: "linux-arm64v8"
+            dickname: "linux-arm64"
           - patch_arch: "aarch64_cortex-a53"
             sdk_arch: "mediatek-filogic"
-            dickname: "linux-arm64v8"
+            dickname: "linux-arm64"
 
     steps:
       - name: Checkout
@@ -183,10 +181,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install build-essential gettext xsltproc python3-pyelftools
 
-          sdk_name=openwrt-sdk-${{ matrix.sdk_arch }}_gcc-14.4.0_musl.Linux-x86_64
+          sdk_name=openwrt-sdk-${{ matrix.sdk_arch }}_gcc-15.3.0_musl.Linux-x86_64
           echo "sdk_name=$sdk_name" >> $GITHUB_OUTPUT
 
-          curl --resolve la.867678.xyz:443:23.95.28.150 -LO https://la.867678.xyz/sdk/$sdk_name.tar.zst
+          curl -LO https://la.867678.xyz/sdk/$sdk_name.tar.zst
 
           tar -xvf $sdk_name.tar.zst
           rm $sdk_name.tar.zst
